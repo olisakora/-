@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OLI AI Studio — Supabase AI</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#08090d;--panel:#11131a;--panel2:#171923;--line:#262a38;--text:#f5f6fa;--muted:#9298aa;--accent:#c9ff5a;--danger:#ff647c;--warn:#ffc85a;--ok:#63e6be}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#202816 0,#08090d 35%);color:var(--text);font-family:Arial,Tahoma,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}.side{border-left:1px solid var(--line);background:rgba(9,10,14,.9);padding:22px 16px;position:sticky;top:0;height:100vh}
+.logo{font-size:28px;font-weight:900;letter-spacing:3px;color:var(--accent);padding:8px 10px 25px}.logo small{display:block;color:var(--muted);font-size:11px;letter-spacing:1px;margin-top:4px}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#bfc4d2;text-align:right;padding:13px 14px;border-radius:12px}.nav button:hover,.nav button.active{background:var(--panel2);color:var(--text)}.nav button.active{box-shadow:inset -3px 0 var(--accent)}
+.main{padding:25px;max-width:1500px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:24px}.title h1{margin:0 0 5px;font-size:28px}.title p{margin:0;color:var(--muted)}
+.pill{background:#182018;border:1px solid #34452a;color:var(--accent);padding:8px 12px;border-radius:999px;font-size:12px}
+.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:linear-gradient(145deg,#151720,#0e1016);border:1px solid var(--line);border-radius:18px;padding:18px}.metric .k{color:var(--muted);font-size:12px}.metric .v{font-size:28px;font-weight:800;margin:8px 0}.metric .s{font-size:12px;color:var(--ok)}
+.section{margin-top:18px}.section h2{font-size:17px;margin:0 0 12px}.two{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
+.list{display:grid;gap:9px}.row{display:flex;justify-content:space-between;align-items:center;background:#12141c;border:1px solid #222633;padding:13px;border-radius:12px}.badge{padding:5px 9px;border-radius:8px;font-size:11px}.red{background:#32151d;color:#ff8799}.yellow{background:#302815;color:#ffd16b}.green{background:#132b25;color:#72e6c1}.muted{color:var(--muted)}
+.upload{border:1.5px dashed #3a4052;border-radius:16px;padding:35px;text-align:center;background:#0d0f15}.upload input{display:none}.upload label{display:inline-block;padding:11px 17px;background:var(--accent);color:#10120c;border-radius:11px;font-weight:800}.preview{max-width:100%;max-height:280px;border-radius:14px;margin:15px auto;display:none}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid var(--line);background:#1a1d27;color:white;padding:10px 14px;border-radius:10px}.btn.primary{background:var(--accent);color:#0b0d08;border-color:var(--accent);font-weight:800}.btn.danger{background:#34151d;color:#ff93a2}
+textarea,input,select{width:100%;background:#0c0e14;border:1px solid #292e3d;color:white;border-radius:11px;padding:12px;outline:none}textarea{min-height:130px;resize:vertical}.field{margin-bottom:12px}.field label{display:block;color:#aeb4c4;font-size:12px;margin-bottom:6px}
+.chat{height:390px;display:flex;flex-direction:column}.messages{flex:1;overflow:auto;display:grid;gap:8px;align-content:start;padding-bottom:10px}.msg{padding:10px 12px;border-radius:12px;max-width:85%;line-height:1.6}.bot{background:#1b202a;justify-self:start}.me{background:#253017;justify-self:end}.chatbar{display:flex;gap:8px}.chatbar input{flex:1}
+table{width:100%;border-collapse:collapse}th,td{padding:12px;border-bottom:1px solid #252936;text-align:right;font-size:13px}th{color:#9298aa}.risk{font-weight:800}
+.empty{text-align:center;padding:35px;color:var(--muted)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{height:auto;position:relative;border-left:0;border-bottom:1px solid var(--line);padding:10px}.logo{padding:8px 5px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.main{padding:15px}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.card{padding:14px}}
+.jsonbox{font-family:monospace;white-space:pre-wrap;background:#090b10;border:1px solid #242936;padding:12px;border-radius:10px;color:#b9ff76;direction:ltr;text-align:left}\n</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="logo">OLI<small>AI STUDIO</small></div>
+  <div class="nav">
+    <button class="active" data-page="dashboard">⌂ لوحة التحكم</button>
+    <button data-page="product">✦ مولّد المنتجات</button>
+    <button data-page="inventory">◫ ذكاء المخزون</button>
+    <button data-page="fraud">⚠ كشف الطلبات</button>
+    <button data-page="assistant">◉ المساعد الذكي</button>
+    <button data-page="vision">⌕ البحث بالصورة</button>
+    <button data-page="fit">♙ المقاس والألوان</button>
+    <button data-page="tryon">◌ Virtual Try-On</button>
+<button data-page="settings">⚙ ربط Supabase</button>
+<button data-page="automation">⚡ AI Automation</button>
+<button data-page="catalog">▦ كتالوج المنتجات</button>
+<button data-page="ai">✦ AI Vision</button>
+<button data-page="imgsearch">⌕ Image Match</button>
+<button data-page="pose">♙ Body Scan</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="top"><div class="title"><h1 id="pageTitle">لوحة ذكاء OLI</h1><p id="pageSub">مركز التحكم في أدوات الذكاء الاصطناعي لمتجرك</p></div><span class="pill">● AI Engine جاهز</span></header>
+
+<section id="dashboard" class="page active">
+<div class="grid">
+ <div class="card metric"><div class="k">المنتجات</div><div class="v">248</div><div class="s">+12 هذا الشهر</div></div>
+ <div class="card metric"><div class="k">طلبات اليوم</div><div class="v">37</div><div class="s">+18% عن أمس</div></div>
+ <div class="card metric"><div class="k">مخزون معرض للخطر</div><div class="v">8</div><div class="s" style="color:var(--warn)">تحتاج متابعة</div></div>
+ <div class="card metric"><div class="k">طلبات عالية المخاطر</div><div class="v">3</div><div class="s" style="color:var(--danger)">مراجعة مطلوبة</div></div>
+</div>
+<div class="two section">
+ <div class="card"><h2>توقعات المخزون</h2><div class="list">
+  <div class="row"><span>عباية ليان السوداء</span><span class="badge red">تنفد خلال 2 يوم</span></div>
+  <div class="row"><span>بيجاما Sakura</span><span class="badge yellow">تنفد خلال 5 أيام</span></div>
+  <div class="row"><span>فستان Luna</span><span class="badge green">18 يوم</span></div>
+ </div></div>
+ <div class="card"><h2>نشاط AI</h2><div class="list">
+  <div class="row"><span>وصف منتج جديد</span><span class="muted">منذ 4 د</span></div>
+  <div class="row"><span>تحليل 14 طلبًا</span><span class="muted">منذ 11 د</span></div>
+  <div class="row"><span>اقتراح 6 إطلالات</span><span class="muted">منذ 18 د</span></div>
+ </div></div>
+</div>
+</section>
+
+<section id="product" class="page">
+<div class="two">
+ <div class="card">
+  <h2>توليد وصف المنتج والهاشتاقات</h2>
+  <div class="upload"><input id="productImage" type="file" accept="image/*"><label for="productImage">＋ ارفعي صورة المنتج</label><img id="productPreview" class="preview"></div>
+  <div class="actions"><button class="btn primary" id="generateProduct">✦ توليد بالذكاء الاصطناعي</button><button class="btn" id="clearProduct">مسح</button></div>
+ </div>
+ <div class="card"><h2>الناتج</h2>
+  <div class="field"><label>اسم المنتج</label><input id="prodName" placeholder="سيظهر هنا"></div>
+  <div class="field"><label>الوصف التسويقي</label><textarea id="prodDesc" placeholder="ارفعي الصورة ثم اضغطي توليد..."></textarea></div>
+  <div class="field"><label>كلمات البحث والهاشتاقات</label><textarea id="prodTags" placeholder="#عباية #OLI ..."></textarea></div>
+  <button class="btn primary" id="copyProduct">نسخ المحتوى</button>
+ </div>
+</div>
+</section>
+
+<section id="inventory" class="page">
+<div class="card"><h2>التنبؤ الذكي بالمخزون</h2><p class="muted">الحساب التجريبي يعتمد على المبيعات اليومية الأخيرة. عند ربط Supabase سيستخدم الطلبات الحقيقية.</p>
+<table><thead><tr><th>المنتج</th><th>المخزون</th><th>متوسط البيع/يوم</th><th>التوقع</th><th>الحالة</th></tr></thead>
+<tbody id="inventoryBody"></tbody></table>
+</div>
+</section>
+
+<section id="fraud" class="page">
+<div class="card"><h2>كشف الطلبات المشبوهة</h2><p class="muted">نظام تقييم أولي يكتشف التكرار في الهاتف والعنوان وعدد الطلبات.</p>
+<table><thead><tr><th>الطلب</th><th>العميلة</th><th>التكرار</th><th>درجة الخطر</th><th>القرار</th></tr></thead>
+<tbody id="fraudBody"></tbody></table></div>
+</section>
+
+<section id="assistant" class="page">
+<div class="two"><div class="card chat"><h2>مساعد التسوق العربي</h2><div class="messages" id="messages"><div class="msg bot">أهلًا بكِ في OLI ✨ قولي لي ماذا تبحثين عنه، مثل: «عباية سوداء تحت 8000 دج».</div></div><div class="chatbar"><input id="chatInput" placeholder="اكتبي طلبك..."><button class="btn primary" id="sendChat">إرسال</button><button class="btn" id="voiceBtn">🎙</button></div></div>
+<div class="card"><h2>فهم الطلب</h2><div class="list" id="intentBox"><div class="row"><span>اللون</span><b>—</b></div><div class="row"><span>السعر الأقصى</span><b>—</b></div><div class="row"><span>النوع</span><b>—</b></div></div></div></div>
+</section>
+
+<section id="vision" class="page">
+<div class="two"><div class="card"><h2>البحث عن منتج بالصورة</h2><div class="upload"><input id="visionImage" type="file" accept="image/*"><label for="visionImage">＋ ارفعي صورة للبحث</label><img id="visionPreview" class="preview"></div><button class="btn primary" style="margin-top:12px" id="visionSearch">⌕ البحث عن أقرب المنتجات</button></div>
+<div class="card"><h2>النتائج</h2><div id="visionResults" class="empty">ارفعي صورة للبدء.</div></div></div>
+</section>
+
+<section id="fit" class="page">
+<div class="two"><div class="card"><h2>اقتراح المقاس والألوان</h2>
+<div class="field"><label>الطول التقريبي (سم)</label><input id="height" type="number" placeholder="165"></div>
+<div class="field"><label>عرض الكتف (سم)</label><input id="shoulder" type="number" placeholder="40"></div>
+<div class="field"><label>محيط الخصر (سم)</label><input id="waist" type="number" placeholder="72"></div>
+<div class="field"><label>اللون الذي تفضلينه</label><select id="skinTone"><option value="">اختاري</option><option>فاتح</option><option>متوسط</option><option>داكن</option></select></div>
+<button class="btn primary" id="fitCalc">تحليل</button>
+</div><div class="card" id="fitResult"><div class="empty">أدخلي القياسات للحصول على اقتراح.</div></div></div>
+</section>
+
+<section id="settings" class="page">
+<div class="two">
+  <div class="card">
+    <h2>ربط OLI AI مع Supabase</h2>
+    <p class="muted">استخدمي Project URL و anon/public key فقط. لا تضعي Service Role Key داخل هذا الملف.</p>
+    <div class="field"><label>Supabase Project URL</label><input id="sbUrl" placeholder="https://xxxx.supabase.co"></div>
+    <div class="field"><label>Supabase anon/public key</label><textarea id="sbKey" style="min-height:90px" placeholder="eyJ..."></textarea></div>
+    <div class="actions">
+      <button class="btn primary" id="connectSb">● اتصال واختبار</button>
+      <button class="btn" id="saveSb">حفظ محليًا</button>
+      <button class="btn danger" id="clearSb">حذف الإعدادات</button>
+    </div>
+    <div id="sbStatus" class="muted" style="margin-top:12px">غير متصل.</div>
+  </div>
+  <div class="card">
+    <h2>ما الذي سيتزامن؟</h2>
+    <div class="list">
+      <div class="row"><span>الطلبات</span><b id="syncOrders">—</b></div>
+      <div class="row"><span>المهام / وظائف AI</span><b id="syncJobs">—</b></div>
+      <div class="row"><span>الحالة العامة</span><b id="syncState">—</b></div>
+      <div class="row"><span>آخر مزامنة</span><b id="syncTime">—</b></div>
+    </div>
+  </div>
+</div>
+<div class="card section">
+  <h2>ملاحظة أمنية</h2>
+  <p class="muted">هذا المتصفح يستخدم anon key فقط ويخضع لـ RLS الموجود في قاعدة OLI. لا تضعي أي مفتاح خدمة أو مفتاح إداري في HTML. ملف SQL الحالي لـ OLI ينشئ جداول مثل oli_orders وoli_jobs وoli_public_state ويعتمد على سياسات RLS. </p>
+</div>
+</section>
+
+<section id="pose" class="page">
+<div class="two">
+ <div class="card">
+  <h2>Body Scan — كاميرا المقاس</h2>
+  <p class="muted">تجربة أولية: الكاميرا تعرض جسمك محليًا. عند إضافة MediaPipe Pose يمكن استخراج نقاط الجسم وحساب نسب تقريبية للمقاس. لا نحفظ الفيديو.</p>
+  <div style="position:relative">
+   <video id="poseVideo" autoplay playsinline muted style="width:100%;max-height:520px;object-fit:cover;border-radius:16px;background:#050608;display:none"></video>
+   <canvas id="poseCanvas" style="width:100%;border-radius:16px;display:none"></canvas>
+  </div>
+  <div class="actions">
+   <button class="btn primary" id="startPose">📷 تشغيل الكاميرا</button>
+   <button class="btn" id="stopPose">إيقاف</button>
+   <button class="btn" id="capturePose">تحليل الوضعية</button>
+  </div>
+  <div id="poseStatus" class="muted" style="margin-top:12px">الكاميرا متوقفة.</div>
+ </div>
+ <div class="card">
+  <h2>اقتراح المقاس</h2>
+  <div id="poseResult" class="empty">شغلي الكاميرا ثم اضغطي تحليل الوضعية.</div>
+ </div>
+</div>
+<div class="card section">
+ <h2>الخصوصية</h2>
+ <p class="muted">الفكرة هنا أن تحليل الوضعية يمكن أن يتم على الجهاز. لا يتم رفع الفيديو تلقائيًا إلى Supabase. إرسال صورة للتحليل الخارجي يجب أن يكون إجراءً منفصلًا وموافقة العميلة مطلوبة.</p>
+</div>
+</section>
+
+<section id="imgsearch" class="page">
+<div class="two">
+ <div class="card">
+  <h2>بحث بصري عن أقرب منتج</h2>
+  <p class="muted">ارفعي صورة لقطعة تريدين إيجاد ما يشبهها في متجر OLI. هذه الواجهة تستخدم بصمة بصرية تجريبية، وتصبح المطابقة الحقيقية عند تخزين embeddings للمنتجات.</p>
+  <div class="upload">
+   <input id="matchImage" type="file" accept="image/*">
+   <label for="matchImage">＋ اختيار صورة</label>
+   <img id="matchPreview" class="preview">
+  </div>
+  <div class="actions">
+   <button class="btn primary" id="runMatch">⌕ ابحث عن الأقرب</button>
+   <button class="btn" id="matchClear">مسح</button>
+  </div>
+  <div id="matchStatus" class="muted" style="margin-top:12px">جاهز.</div>
+ </div>
+ <div class="card">
+  <h2>أقرب المنتجات</h2>
+  <div id="matchResults" class="empty">ارفعي صورة ثم ابدئي البحث.</div>
+ </div>
+</div>
+<div class="card section">
+ <h2>المطابقة الحقيقية</h2>
+ <p class="muted">النسخة الجاهزة للربط تحفظ embedding لكل منتج في Supabase ثم تستخدم مسافة cosine للعثور على الأقرب. لا نعتمد على اسم الملف أو أرقام ثابتة.</p>
+</div>
+</section>
+
+<section id="ai" class="page">
+<div class="two">
+ <div class="card">
+  <h2>AI Vision — تحليل المنتج</h2>
+  <p class="muted">ارفعي صورة منتج. الواجهة تحوّلها إلى طلب AI منظم. عند وضع Supabase Edge Function، يمكن إرسال الصورة للتحليل دون كشف مفتاح النموذج في المتصفح.</p>
+  <div class="upload">
+   <input id="aiImage" type="file" accept="image/*">
+   <label for="aiImage">＋ اختيار صورة المنتج</label>
+   <img id="aiPreview" class="preview">
+  </div>
+  <div class="actions">
+   <button class="btn primary" id="analyzeImage">✦ تحليل الصورة</button>
+   <button class="btn" id="makePrompt">نسخ Prompt</button>
+  </div>
+  <div class="field" style="margin-top:14px"><label>عنوان Edge Function (اختياري)</label><input id="edgeUrl" placeholder="https://PROJECT.supabase.co/functions/v1/oli-ai-vision"></div>
+  <div id="visionStatus" class="muted">لم يتم التحليل بعد.</div>
+ </div>
+ <div class="card">
+  <h2>بيانات المنتج الناتجة</h2>
+  <div class="field"><label>الاسم</label><input id="aiName" placeholder="—"></div>
+  <div class="field"><label>الوصف</label><textarea id="aiDesc" placeholder="—"></textarea></div>
+  <div class="field"><label>اللون</label><input id="aiColor" placeholder="—"></div>
+  <div class="field"><label>الفئة</label><input id="aiCategory" placeholder="—"></div>
+  <div class="field"><label>الخامة / التفاصيل</label><input id="aiMaterial" placeholder="—"></div>
+  <div class="field"><label>الكلمات والهاشتاقات</label><textarea id="aiTags" placeholder="—"></textarea></div>
+  <button class="btn primary" id="saveVision">حفظ النتيجة في Supabase</button>
+ </div>
+</div>
+<div class="card section">
+ <h2>كيف يصبح التحليل حقيقيًا؟</h2>
+ <div class="list">
+  <div class="row"><span>1. الصورة</span><b>Browser</b></div>
+  <div class="row"><span>2. Edge Function</span><b>Supabase</b></div>
+  <div class="row"><span>3. Vision Model</span><b>AI</b></div>
+  <div class="row"><span>4. JSON منظم</span><b>Product Insight</b></div>
+ </div>
+</div>
+</section>
+
+<section id="catalog" class="page">
+<div class="two">
+ <div class="card">
+  <h2>إضافة منتج للتحليل</h2>
+  <p class="muted">أدخلي المخزون الحالي ومتوسط المبيعات اليومية. لاحقًا يمكن استبدال هذه القيم تلقائيًا ببيانات OLI الحقيقية.</p>
+  <div class="field"><label>اسم المنتج</label><input id="catName" placeholder="مثال: عباية ليان"></div>
+  <div class="field"><label>المخزون الحالي</label><input id="catStock" type="number" min="0" placeholder="20"></div>
+  <div class="field"><label>متوسط المبيعات يوميًا</label><input id="catVelocity" type="number" min="0" step="0.1" placeholder="3.5"></div>
+  <div class="actions"><button class="btn primary" id="addCatalog">＋ إضافة وتحليل</button><button class="btn" id="clearCatalog">مسح الكتالوج التجريبي</button></div>
+ </div>
+ <div class="card">
+  <h2>توقع النفاد</h2>
+  <div id="forecastSummary" class="empty">أضيفي منتجات لعرض التوقعات.</div>
+ </div>
+</div>
+<div class="card section">
+ <h2>المنتجات</h2>
+ <table><thead><tr><th>المنتج</th><th>المخزون</th><th>بيع/يوم</th><th>أيام متبقية</th><th>الحالة</th></tr></thead>
+ <tbody id="catalogBody"></tbody></table>
+</div>
+</section>
+
+<section id="automation" class="page">
+<div class="grid">
+ <div class="card metric"><div class="k">سرعة البيع المحسوبة</div><div class="v" id="autoVelocity">—</div><div class="s">من الطلبات المتاحة</div></div>
+ <div class="card metric"><div class="k">طلبات عالية المخاطر</div><div class="v" id="autoRisk">—</div><div class="s" style="color:var(--danger)">تحتاج مراجعة</div></div>
+ <div class="card metric"><div class="k">منتجات معرضة للنفاد</div><div class="v" id="autoStock">—</div><div class="s" style="color:var(--warn)">تحت 7 أيام</div></div>
+ <div class="card metric"><div class="k">حالة المحرك</div><div class="v" style="font-size:20px">READY</div><div class="s">قابل للتزامن مع Supabase</div></div>
+</div>
+<div class="two section">
+ <div class="card">
+  <h2>تشغيل التحليل الآن</h2>
+  <p class="muted">يقرأ الطلبات المسموح بها من Supabase ويحسب مؤشرات أولية. لا يرسل بيانات إلى خدمة AI خارجية.</p>
+  <div class="actions">
+   <button class="btn primary" id="runAnalysis">⚡ تشغيل التحليل</button>
+   <button class="btn" id="saveAnalysis">حفظ النتائج في Supabase</button>
+  </div>
+  <div id="analysisStatus" class="muted" style="margin-top:12px">لم يبدأ التحليل.</div>
+ </div>
+ <div class="card">
+  <h2>نتائج التحليل</h2>
+  <div id="analysisResults" class="empty">اضغطي تشغيل التحليل.</div>
+ </div>
+</div>
+<div class="card section">
+ <h2>قاعدة كشف الطلبات المشبوهة</h2>
+ <p class="muted">الإصدار الحالي يستخدم إشارات قابلة للتفسير: تكرار رقم الهاتف، العنوان، كثرة الطلبات خلال فترة قصيرة، وتكرار الإلغاءات إذا كانت موجودة داخل payload. عند ربط بيانات OLI الفعلية ستُستخدم الحقول الموجودة فعليًا فقط.</p>
+</div>
+</section>
+
+<section id="tryon" class="page">
+<div class="card"><h2>Virtual Try-On — النسخة التجريبية</h2><p class="muted">هذه الواجهة جاهزة لربط محرك VTON أو MediaPipe لاحقًا. في هذه النسخة نجهز تجربة الصورة والكاميرا بدون الادعاء بتركيب ملابس حقيقي.</p>
+<div class="actions"><button class="btn primary" id="cameraBtn">📷 تشغيل الكاميرا</button><button class="btn" id="stopCamera">إيقاف</button></div>
+<video id="camera" autoplay playsinline style="width:100%;max-height:500px;border-radius:15px;margin-top:15px;display:none"></video></div>
+</section>
+</main></div>
+
+<script>
+const pages={dashboard:['لوحة ذكاء OLI','مركز التحكم في أدوات الذكاء الاصطناعي لمتجرك'],product:['AI Product Studio','توليد وصف وهاشتاقات من صورة المنتج'],inventory:['Inventory Intelligence','توقع موعد نفاد كل منتج بناءً على سرعة البيع'],fraud:['Fraud Center','تحليل الأنماط وتحديد الطلبات التي تحتاج مراجعة'],assistant:['AI Shopping Assistant','مساعد تسوق يفهم العربية والميزانية واللون والنوع'],vision:['Visual Search','العثور على المنتجات الأقرب بصريًا'],fit:['Fit AI','اقتراح المقاس والألوان بناءً على بيانات العميلة'],tryon:['Virtual Try-On','تجربة الملابس بالكاميرا — محرك الرؤية قابل للربط'],settings:['ربط Supabase','مزامنة بيانات OLI الحقيقية مع مركز الذكاء الاصطناعي'],automation:['AI Automation','تشغيل التحليلات الذكية على بيانات المتجر'],catalog:['Product Intelligence','إدارة كتالوج المنتجات وسرعة البيع والتوقعات'],ai:['AI Vision','تحليل صور المنتجات وتوليد بيانات الكتالوج'],imgsearch:['Image Match','مقارنة الصورة المرفوعة مع كتالوج OLI'],pose:['Body Scan','قياس تقريبي من وضعية الجسم واقتراح المقاس']};
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active');document.getElementById('pageTitle').textContent=pages[b.dataset.page][0];document.getElementById('pageSub').textContent=pages[b.dataset.page][1]});
+
+function preview(input,img){input.onchange=()=>{const f=input.files[0];if(!f)return;img.src=URL.createObjectURL(f);img.style.display='block'}}
+preview(document.getElementById('productImage'),document.getElementById('productPreview'));preview(document.getElementById('visionImage'),document.getElementById('visionPreview'));
+
+document.getElementById('generateProduct').onclick=()=>{
+ const has=document.getElementById('productImage').files.length;
+ const name=has?'عباية OLI الأنيقة':'منتج OLI الجديد';
+ document.getElementById('prodName').value=name;
+ document.getElementById('prodDesc').value='قطعة أنيقة بتصميم عصري ولمسة أنثوية راقية، مصممة لتمنحك إطلالة مميزة وراحة طوال اليوم. خيار مثالي للمناسبات والخروجات، مع تفاصيل تضيف فخامة بسيطة إلى إطلالتك.';
+ document.getElementById('prodTags').value='#OLI #عبايات #أزياء_نسائية #موضة #ستايل #إطلالة_أنثوية #الجزائر #ملابس_نساء #عباية_أنيقة';
+};
+document.getElementById('clearProduct').onclick=()=>{['prodName','prodDesc','prodTags'].forEach(id=>document.getElementById(id).value='');document.getElementById('productPreview').style.display='none'};
+document.getElementById('copyProduct').onclick=async()=>{const t=[prodName.value,prodDesc.value,prodTags.value].join('\\n\\n');try{await navigator.clipboard.writeText(t);alert('تم نسخ المحتوى ✨')}catch(e){alert(t)}};
+
+const inv=[['عباية ليان السوداء',12,4.8],['بيجاما Sakura',23,4.4],['فستان Luna',61,3.2],['طقم Rose',18,1.5],['عباية Velvet',9,.9]];
+document.getElementById('inventoryBody').innerHTML=inv.map(x=>{let d=x[1]/x[2];let st=d<3?'خطر':d<7?'تحذير':'جيد';let cls=d<3?'red':d<7?'yellow':'green';return `<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td>${d.toFixed(1)} يوم</td><td><span class="badge ${cls}">${st}</span></td></tr>`}).join('');
+
+const fr=[['#10482','سارة','4 طلبات / 24 ساعة',91],['#10479','نور','3 عناوين مختلفة',76],['#10471','ليلى','طبيعي',12],['#10463','ريم','5 محاولات إلغاء',84]];
+document.getElementById('fraudBody').innerHTML=fr.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${x[2]}</td><td class="risk" style="color:${x[3]>80?'var(--danger)':x[3]>50?'var(--warn)':'var(--ok)'}">${x[3]}%</td><td>${x[3]>80?'<span class="badge red">مراجعة يدوية</span>':x[3]>50?'<span class="badge yellow">مراقبة</span>':'<span class="badge green">سليم</span>'}</td></tr>`).join('');
+
+function parseIntent(t){let price=(t.match(/(\d[\d\s]*)\s*(?:دج|دينار)/i)||[])[1];let colors=['أسود','أسود','أبيض','أحمر','وردي','بيج','أزرق','أخضر','بني','بنفسجي'];let color=colors.find(c=>t.includes(c))||'غير محدد';let types=['عباية','فستان','بيجاما','طقم','إكسسوار','حقيبة'];let type=types.find(c=>t.includes(c))||'غير محدد';return {price:price?price.replace(/\s/g,'')+' دج':'غير محدد',color,type}}
+document.getElementById('sendChat').onclick=()=>{let inp=document.getElementById('chatInput'),t=inp.value.trim();if(!t)return;let m=document.getElementById('messages');m.innerHTML+=`<div class="msg me">${t}</div>`;let p=parseIntent(t);document.getElementById('intentBox').innerHTML=`<div class="row"><span>اللون</span><b>${p.color}</b></div><div class="row"><span>السعر الأقصى</span><b>${p.price}</b></div><div class="row"><span>النوع</span><b>${p.type}</b></div>`;let reply=p.type!=='غير محدد'?`فهمت طلبك ✨ سأبحث عن ${p.type} ${p.color!=='غير محدد'?p.color:''}${p.price!=='غير محدد'?' بسعر أقل من '+p.price:''} وأرتب النتائج حسب الأقرب لطلبك.`:'فهمت جزءًا من طلبك. حددي لي النوع أو اللون أو الميزانية وسأضيّق النتائج لكِ.';setTimeout(()=>{m.innerHTML+=`<div class="msg bot">${reply}</div>`;m.scrollTop=m.scrollHeight},250);inp.value=''};
+document.getElementById('chatInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('sendChat').click()};
+document.getElementById('voiceBtn').onclick=()=>{const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){alert('التعرف الصوتي غير مدعوم في هذا المتصفح.');return}let r=new R();r.lang='ar-DZ';r.onresult=e=>{document.getElementById('chatInput').value=e.results[0][0].transcript;document.getElementById('sendChat').click()};r.start()};
+
+document.getElementById('visionSearch').onclick=()=>{document.getElementById('visionResults').innerHTML='<div class="list"><div class="row"><span>عباية ليان السوداء</span><span class="badge green">94% تطابق</span></div><div class="row"><span>عباية Velvet</span><span class="badge green">87% تطابق</span></div><div class="row"><span>فستان Luna</span><span class="badge yellow">71% تطابق</span></div></div><p class="muted" style="margin-top:12px">نتيجة تجريبية. محرك embeddings البصري المحلي يُربط في المرحلة التالية.</p>'};
+document.getElementById('fitCalc').onclick=()=>{let h=+height.value,s=+shoulder.value,w=+waist.value,t=skinTone.value;if(!h&&!s&&!w){alert('أدخلي بعض القياسات أولاً');return}let size=w<=68?'S':w<=78?'M':w<=88?'L':'XL';let colors=t==='فاتح'?'بيج، وردي غباري، أزرق سماوي':t==='متوسط'?'أسود، زمردي، عنابي':'أوف وايت، أزرق ملكي، وردي عميق';fitResult.innerHTML=`<h2>نتيجة التحليل ✨</h2><div class="card" style="background:#0b0e12"><div class="muted">المقاس المقترح</div><div style="font-size:42px;font-weight:900;color:var(--accent)">${size}</div><p>الألوان المقترحة: <b>${colors}</b></p><small class="muted">هذه نتيجة إرشادية وليست قياسًا طبيًا أو ضمانًا للملاءمة.</small></div>`};
+let stream;cameraBtn.onclick=async()=>{try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});camera.srcObject=stream;camera.style.display='block'}catch(e){alert('تعذر تشغيل الكاميرا. تأكدي من السماح بالوصول إليها.')}}
+stopCamera.onclick=()=>{if(stream)stream.getTracks().forEach(t=>t.stop());camera.style.display='none'};
+
+// ===================== SUPABASE CONNECTOR =====================
+let sbClient = null;
+const sbSaved = JSON.parse(localStorage.getItem('oli_ai_supabase') || 'null');
+if (sbSaved) {
+  sbUrl.value = sbSaved.url || '';
+  sbKey.value = sbSaved.key || '';
+}
+function setSbStatus(text, ok=false){
+  sbStatus.textContent = text;
+  sbStatus.style.color = ok ? 'var(--ok)' : 'var(--muted)';
+}
+async function connectSupabase(){
+  const url = sbUrl.value.trim(), key = sbKey.value.trim();
+  if(!url || !key){ setSbStatus('أدخلي Project URL و anon/public key أولًا.'); return; }
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)){
+    setSbStatus('Project URL غير صحيح. مثال: https://xxxx.supabase.co'); return;
+  }
+  try{
+    sbClient = window.supabase.createClient(url,key);
+    const results = await Promise.all([
+      sbClient.from('oli_orders').select('id,created_at').limit(1000),
+      sbClient.from('oli_jobs').select('id,created_at').limit(1000),
+      sbClient.from('oli_public_state').select('id,updated_at').limit(100)
+    ]);
+    const failed = results.find(r=>r.error);
+    if(failed) throw failed.error;
+    syncOrders.textContent = `${results[0].data?.length || 0} طلب`;
+    syncJobs.textContent = `${results[1].data?.length || 0} وظيفة`;
+    syncState.textContent = `${results[2].data?.length || 0} سجل`;
+    syncTime.textContent = new Date().toLocaleTimeString('ar-DZ');
+    setSbStatus('متصل بنجاح ✓ تم اختبار الجداول الثلاثة.', true);
+    localStorage.setItem('oli_ai_supabase', JSON.stringify({url,key}));
+    refreshDashboardFromSupabase(results[0].data || []);
+  }catch(e){
+    sbClient = null;
+    setSbStatus('فشل الاتصال: ' + (e.message || 'تحققي من URL/key وRLS والجداول.'));
+  }
+}
+async function refreshDashboardFromSupabase(orders){
+  // Use only data available through the public RLS policy.
+  const today = new Date().toISOString().slice(0,10);
+  const todayCount = orders.filter(o => String(o.created_at||'').slice(0,10) === today).length;
+  const metrics = document.querySelectorAll('.metric .v');
+  if(metrics[1]) metrics[1].textContent = todayCount;
+}
+connectSb.onclick = connectSupabase;
+saveSb.onclick = ()=>{
+  if(!sbUrl.value.trim() || !sbKey.value.trim()){ setSbStatus('لا يوجد إعداد صالح للحفظ.'); return; }
+  localStorage.setItem('oli_ai_supabase', JSON.stringify({url:sbUrl.value.trim(),key:sbKey.value.trim()}));
+  setSbStatus('تم حفظ إعدادات الاتصال على هذا الجهاز.', true);
+};
+clearSb.onclick = ()=>{
+  localStorage.removeItem('oli_ai_supabase'); sbUrl.value=''; sbKey.value=''; sbClient=null;
+  setSbStatus('تم حذف إعدادات الاتصال.');
+};
+// محاولة اتصال تلقائية إذا كانت الإعدادات محفوظة
+if(sbSaved?.url && sbSaved?.key) setTimeout(connectSupabase, 400);
+
+
+// ===================== AI ANALYTICS ENGINE =====================
+let lastAnalysis = {inventory:[], risks:[]};
+
+function payloadOf(o){
+  if(!o) return {};
+  if(typeof o.payload === 'object' && o.payload) return o.payload;
+  try{return JSON.parse(o.payload||'{}')}catch(e){return {}}
+}
+function pick(o, keys){
+  for(const k of keys){
+    if(o[k]!==undefined && o[k]!==null && String(o[k]).trim()!=='') return o[k];
+    const p=payloadOf(o);
+    if(p[k]!==undefined && p[k]!==null && String(p[k]).trim()!=='') return p[k];
+  }
+  return '';
+}
+function normalize(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function analyzeOrders(orders){
+  const phoneMap={}, addressMap={}, customerMap={};
+  for(const o of orders){
+    const phone=normalize(pick(o,['phone','customer_phone','client_phone','telephone']));
+    const address=normalize(pick(o,['address','delivery_address','shipping_address']));
+    const customer=normalize(pick(o,['customer_id','user_id','email']));
+    if(phone) phoneMap[phone]=(phoneMap[phone]||[]).concat(o);
+    if(address) addressMap[address]=(addressMap[address]||[]).concat(o);
+    if(customer) customerMap[customer]=(customerMap[customer]||[]).concat(o);
+  }
+  const risks=orders.map(o=>{
+    let score=0, signals=[];
+    const phone=normalize(pick(o,['phone','customer_phone','client_phone','telephone']));
+    const address=normalize(pick(o,['address','delivery_address','shipping_address']));
+    const customer=normalize(pick(o,['customer_id','user_id','email']));
+    if(phone && phoneMap[phone]?.length>=3){score+=45;signals.push('تكرار الهاتف')}
+    if(address && addressMap[address]?.length>=3){score+=30;signals.push('تكرار العنوان')}
+    if(customer && customerMap[customer]?.length>=4){score+=20;signals.push('تكرار العميل')}
+    const status=normalize(pick(o,['status','order_status']));
+    if(/cancel|cancelled|canceled|ملغ|إلغاء/.test(status)){score+=10;signals.push('طلب ملغى')}
+    score=Math.min(score,100);
+    return {id:o.id,score,level:score>=70?'high':score>=40?'medium':'low',signals};
+  });
+  const high=risks.filter(x=>x.level==='high').length;
+  return {risks,high,phoneMap,addressMap};
+}
+function renderAnalysis(orders){
+  const a=analyzeOrders(orders);
+  lastAnalysis.risks=a.risks;
+  autoRisk.textContent=a.high;
+  const sampleVelocity=orders.length? (orders.length/Math.max(1,new Set(orders.map(o=>String(o.created_at||'').slice(0,10))).size)).toFixed(1):'0';
+  autoVelocity.textContent=sampleVelocity+'/يوم';
+  analysisResults.innerHTML=`
+   <div class="list">
+    <div class="row"><span>إجمالي الطلبات المقروءة</span><b>${orders.length}</b></div>
+    <div class="row"><span>طلبات عالية المخاطر</span><b style="color:var(--danger)">${a.high}</b></div>
+    <div class="row"><span>طلبات متوسطة المخاطر</span><b style="color:var(--warn)">${a.risks.filter(x=>x.level==='medium').length}</b></div>
+    <div class="row"><span>طلبات منخفضة المخاطر</span><b style="color:var(--ok)">${a.risks.filter(x=>x.level==='low').length}</b></div>
+   </div>`;
+  analysisStatus.textContent='تم التحليل في '+new Date().toLocaleTimeString('ar-DZ');
+}
+runAnalysis.onclick=async()=>{
+  if(!sbClient){analysisStatus.textContent='اتصلي بـSupabase أولًا من صفحة ربط Supabase.';return}
+  analysisStatus.textContent='جاري قراءة الطلبات...';
+  try{
+    const {data,error}=await sbClient.from('oli_orders').select('id,payload,created_at').limit(5000);
+    if(error) throw error;
+    renderAnalysis(data||[]);
+    autoStock.textContent='يحتاج بيانات المنتجات';
+  }catch(e){analysisStatus.textContent='تعذر التحليل: '+e.message}
+};
+saveAnalysis.onclick=async()=>{
+  if(!sbClient){analysisStatus.textContent='اتصلي بـSupabase أولًا.';return}
+  if(!lastAnalysis.risks.length){analysisStatus.textContent='شغلي التحليل أولًا.';return}
+  // Client can only save if RLS allows it; otherwise this safely reports the policy restriction.
+  const rows=lastAnalysis.risks.map(x=>({order_id:String(x.id),risk_score:x.score,risk_level:x.level,signals:x.signals}));
+  try{
+    const {error}=await sbClient.from('oli_ai_order_risk').upsert(rows);
+    if(error) throw error;
+    analysisStatus.textContent='تم حفظ درجات المخاطر في Supabase ✓';
+  }catch(e){analysisStatus.textContent='لم يتم الحفظ: '+e.message+' — الأفضل تنفيذ الحفظ عبر Edge Function بصلاحيات موثوقة.'}
+};
+
+
+// ===================== PRODUCT / INVENTORY INTELLIGENCE =====================
+const CATALOG_KEY='oli_ai_catalog_v1';
+let catalog=JSON.parse(localStorage.getItem(CATALOG_KEY)||'null') || [
+ {name:'عباية ليان السوداء',stock:12,velocity:4.8},
+ {name:'بيجاما Sakura',stock:23,velocity:4.4},
+ {name:'فستان Luna',stock:61,velocity:3.2},
+ {name:'طقم Rose',stock:18,velocity:1.5},
+ {name:'عباية Velvet',stock:9,velocity:.9}
+];
+function forecast(x){
+  if(x.velocity<=0) return Infinity;
+  return x.stock/x.velocity;
+}
+function forecastClass(d){return d<3?'red':d<7?'yellow':'green'}
+function forecastLabel(d){return !isFinite(d)?'لا توجد مبيعات':d<1?'أقل من يوم':d.toFixed(1)+' يوم'}
+function renderCatalog(){
+  catalogBody.innerHTML=catalog.map((x,i)=>{
+    const d=forecast(x), cls=forecastClass(d);
+    const status=!isFinite(d)?'لا توجد حركة':d<3?'خطر':d<7?'تحذير':'جيد';
+    return `<tr><td>${x.name}</td><td>${x.stock}</td><td>${x.velocity}</td><td>${forecastLabel(d)}</td><td><span class="badge ${cls}">${status}</span></td></tr>`;
+  }).join('');
+  const urgent=catalog.filter(x=>forecast(x)<7).length;
+  const best=catalog.filter(x=>isFinite(forecast(x))).sort((a,b)=>forecast(a)-forecast(b))[0];
+  forecastSummary.innerHTML=`
+   <div class="list">
+    <div class="row"><span>منتجات تحتاج متابعة</span><b style="color:var(--warn)">${urgent}</b></div>
+    <div class="row"><span>الأقرب للنفاد</span><b>${best?best.name:'—'}</b></div>
+    <div class="row"><span>التوقع</span><b>${best?forecastLabel(forecast(best)):'—'}</b></div>
+   </div>`;
+  autoStock.textContent=urgent;
+  localStorage.setItem(CATALOG_KEY,JSON.stringify(catalog));
+}
+addCatalog.onclick=()=>{
+  const name=catName.value.trim(), stock=Number(catStock.value), velocity=Number(catVelocity.value);
+  if(!name || stock<0 || velocity<0){alert('أدخلي بيانات المنتج بشكل صحيح.');return}
+  catalog.push({name,stock,velocity}); catName.value='';catStock.value='';catVelocity.value='';
+  renderCatalog();
+};
+clearCatalog.onclick=()=>{
+  catalog=[]; renderCatalog();
+};
+renderCatalog();
+
+// Extend product generator to use a lightweight image signal and selected catalog.
+const oldGenerate = generateProduct.onclick;
+generateProduct.onclick=()=>{
+  oldGenerate();
+  if(productImage.files[0]){
+    const f=productImage.files[0];
+    const mb=(f.size/1024/1024).toFixed(2);
+    prodDesc.value += `\n\n[تحليل الصورة المحلي: حجم الملف ${mb}MB — تم استقبال الصورة بنجاح.]`;
+  }
+};
+
+// Improve inventory dashboard with the same forecast engine.
+const inventoryBodyOriginal = inventoryBody.innerHTML;
+function refreshInventoryTable(){
+  inventoryBody.innerHTML=catalog.map(x=>{
+    const d=forecast(x);
+    return `<tr><td>${x.name}</td><td>${x.stock}</td><td>${x.velocity}</td><td>${forecastLabel(d)}</td><td><span class="badge ${forecastClass(d)}">${!isFinite(d)?'لا توجد حركة':d<3?'خطر':d<7?'تحذير':'جيد'}</span></td></tr>`;
+  }).join('');
+}
+refreshInventoryTable();
+
+
+// ===================== AI VISION WORKFLOW =====================
+const AI_EDGE_KEY='oli_ai_edge_url';
+const savedEdge=localStorage.getItem(AI_EDGE_KEY)||'';
+edgeUrl.value=savedEdge;
+aiImage.onchange=()=>{
+  const f=aiImage.files[0]; if(!f)return;
+  aiPreview.src=URL.createObjectURL(f); aiPreview.style.display='block';
+  visionStatus.textContent='تم اختيار الصورة. اضغطي تحليل الصورة.';
+};
+function localDraftFromFilename(file){
+  const base=(file?.name||'منتج OLI').replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+  const title=base.length>2?base:'منتج OLI أنيق';
+  return {
+    name:title,
+    description:`${title} بتصميم أنيق ولمسة عصرية، مناسب لإطلالاتك اليومية والمناسبات. تم إنشاء مسودة أولية ويمكن لمحرك Vision تحسينها بعد الاتصال بـEdge Function.`,
+    color:'يحتاج تحليل Vision',
+    category:'ملابس نسائية',
+    material:'يحتاج تحليل Vision',
+    tags:'#OLI #أزياء_نسائية #موضة #إطلالة #الجزائر'
+  };
+}
+function fillAI(x){
+  aiName.value=x.name||''; aiDesc.value=x.description||''; aiColor.value=x.color||'';
+  aiCategory.value=x.category||''; aiMaterial.value=x.material||'';
+  aiTags.value=Array.isArray(x.tags)?x.tags.join(' '):(x.tags||'');
+}
+analyzeImage.onclick=async()=>{
+  const file=aiImage.files[0];
+  if(!file){visionStatus.textContent='اختاري صورة أولًا.';return}
+  const url=edgeUrl.value.trim();
+  if(!url){
+    fillAI(localDraftFromFilename(file));
+    visionStatus.textContent='تم إنشاء مسودة محلية. لإجراء تحليل بصري حقيقي، ضعي رابط Edge Function.';
+    return;
+  }
+  localStorage.setItem(AI_EDGE_KEY,url);
+  visionStatus.textContent='جاري إرسال الصورة إلى Edge Function...';
+  try{
+    const b64=await new Promise((resolve,reject)=>{
+      const r=new FileReader(); r.onload=()=>resolve(String(r.result).split(',')[1]); r.onerror=reject; r.readAsDataURL(file);
+    });
+    const imageDataUrl = `data:${file.type};base64,${b64}`;
+    const response=await fetch(url,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        ...(sbClient ? { 'apikey': sbKey.value.trim() } : {})
+      },
+      body:JSON.stringify({image_data_url:imageDataUrl,language:'ar',store:'OLI'})
+    });
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.error||'Edge Function error');
+    fillAI(data.product||data);
+    visionStatus.textContent='تم تحليل الصورة بواسطة محرك Vision ✓';
+  }catch(e){
+    visionStatus.textContent='فشل التحليل الحقيقي: '+e.message;
+  }
+};
+makePrompt.onclick=async()=>{
+  const prompt=`حلل صورة منتج أزياء نسائية لمتجر OLI. أعد JSON فقط باللغة العربية بهذه المفاتيح:
+name, description, color, category, material, tags.
+اكتب وصفًا تسويقيًا واقعيًا ولا تخترع تفاصيل غير ظاهرة في الصورة. tags يجب أن تكون array من كلمات بحث وهاشتاقات.`;
+  try{await navigator.clipboard.writeText(prompt);visionStatus.textContent='تم نسخ Prompt ✓';}
+  catch(e){alert(prompt)}
+};
+saveVision.onclick=async()=>{
+  if(!sbClient){visionStatus.textContent='اتصلي بـSupabase أولًا.';return}
+  const row={product_id:'ai-'+Date.now(),description:aiDesc.value,hashtags:aiTags.value.split(/\s+/).filter(Boolean),search_terms:[aiName.value,aiCategory.value,aiColor.value].filter(Boolean)};
+  try{
+    const {error}=await sbClient.from('oli_ai_product_insights').upsert(row);
+    if(error)throw error;
+    visionStatus.textContent='تم حفظ تحليل المنتج في Supabase ✓';
+  }catch(e){visionStatus.textContent='لم يتم الحفظ: '+e.message}
+};
+
+
+// ===================== IMAGE MATCH DEMO / READY PIPELINE =====================
+matchImage.onchange=()=>{
+ const f=matchImage.files[0]; if(!f)return;
+ matchPreview.src=URL.createObjectURL(f); matchPreview.style.display='block';
+ matchStatus.textContent='تم اختيار الصورة.';
+};
+function renderMatches(items){
+ matchResults.innerHTML=`<div class="list">${items.map(x=>`
+ <div class="row">
+   <div><b>${x.name}</b><div class="muted" style="font-size:11px;margin-top:3px">${x.category||'منتج OLI'}</div></div>
+   <span class="badge ${x.score>=90?'green':x.score>=75?'yellow':'red'}">${x.score}% تطابق</span>
+ </div>`).join('')}</div>`;
+}
+runMatch.onclick=()=>{
+ const f=matchImage.files[0];
+ if(!f){matchStatus.textContent='اختاري صورة أولًا.';return}
+ // UX-only fallback until product embeddings exist. Scores are deliberately marked as preview.
+ const pool=catalog.length?catalog:[{name:'عباية ليان السوداء',velocity:4.8,stock:12},{name:'بيجاما Sakura',velocity:4.4,stock:23},{name:'فستان Luna',velocity:3.2,stock:61}];
+ const seed=(f.size%17);
+ const items=pool.slice(0,5).map((x,i)=>({name:x.name,category:'OLI',score:Math.max(61,96-seed-i*7)}));
+ renderMatches(items);
+ matchStatus.textContent='نتيجة معاينة. المطابقة البصرية الحقيقية تحتاج embeddings لكل منتج.';
+};
+matchClear.onclick=()=>{matchImage.value='';matchPreview.style.display='none';matchResults.innerHTML='<div class="empty">ارفعي صورة ثم ابدئي البحث.</div>';matchStatus.textContent='جاهز.'};
+
+
+// ===================== BODY SCAN CAMERA =====================
+let poseStream=null;
+startPose.onclick=async()=>{
+ try{
+  poseStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false});
+  poseVideo.srcObject=poseStream; poseVideo.style.display='block'; poseStatus.textContent='الكاميرا تعمل. قفي أمامها بكامل الجسم.';
+ }catch(e){poseStatus.textContent='تعذر تشغيل الكاميرا: '+e.message}
+};
+stopPose.onclick=()=>{
+ if(poseStream)poseStream.getTracks().forEach(t=>t.stop());
+ poseStream=null; poseVideo.style.display='none'; poseStatus.textContent='الكاميرا متوقفة.';
+};
+capturePose.onclick=()=>{
+ if(!poseStream){poseStatus.textContent='شغلي الكاميرا أولًا.';return}
+ const c=document.createElement('canvas');
+ c.width=poseVideo.videoWidth||720;c.height=poseVideo.videoHeight||960;
+ c.getContext('2d').drawImage(poseVideo,0,0,c.width,c.height);
+ // A privacy-first heuristic until MediaPipe is loaded:
+ // ask the user for height and use the captured frame only as a framing check.
+ const h=prompt('أدخلي طولك بالسنتيمتر للحصول على اقتراح أولي (مثال 165):','165');
+ if(!h)return;
+ const height=Number(h);
+ const size=height<155?'S':height<165?'M':height<175?'L':'XL';
+ poseResult.innerHTML=`<h2>اقتراح أولي</h2><div class="card" style="background:#0b0e12"><div class="muted">الطول المدخل</div><div style="font-size:38px;font-weight:900;color:var(--accent)">${height} cm</div><p>المقاس المبدئي: <b>${size}</b></p><small class="muted">هذا ليس قياسًا فعليًا للجسم. للحصول على قياسات أدق نحتاج MediaPipe Pose + معايرة بالكاميرا.</small></div>`;
+ poseStatus.textContent='تم إنشاء الاقتراح الأولي محليًا.';
+};
+
+</script>
+</body
+</html>
