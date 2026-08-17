@@ -5589,11 +5589,6 @@ $('btn-compare-clear')?.addEventListener('click', ()=>{ state.compare=[]; saveSt
    Init
 --------------------------------------------------------------- */
 async function init(){
-  // Never let a failed optional animation/rendering routine trap the user on the splash screen.
-  const splash = $('splash');
-  const releaseSplash = () => { if(splash) splash.classList.add('hide'); };
-  // Hard safety timeout: the storefront must become usable even if any optional init step fails.
-  setTimeout(releaseSplash, 900);
   bindModalClose();
   startCountdown();
   populateJobFilters();
@@ -5627,8 +5622,7 @@ async function init(){
   mountLottie('lottie-cherry-blossom', 'cherryBlossom', true, true);
   mountLottie('lottie-coins', 'coins', true, true);
 
-  // Normal release; the safety timeout above guarantees this can never block the store.
-  setTimeout(releaseSplash, 700);
+  setTimeout(()=>{ $('splash').classList.add('hide'); }, 1400);
 
   qsa('a[href^="#"]').forEach(a=>{
     a.addEventListener('click', function(e){
@@ -5652,16 +5646,8 @@ async function init(){
   }, {passive:true});
 }
 
-const safeInit = () => {
-  Promise.resolve(init()).catch(err => {
-    console.error('VYBE init error:', err);
-    const splash = $('splash');
-    if(splash) splash.classList.add('hide');
-    try { toast('تم تشغيل المتجر بوضع آمن', 'fa-circle-check'); } catch(_) {}
-  });
-};
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', safeInit);
-else safeInit();
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+else init();
 
 /* ---------------------------------------------------------------
    ✨ تحسينات ذكية إضافية للوحة التحكم — أُضيفت لجعل الإدارة أسهل
