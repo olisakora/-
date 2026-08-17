@@ -9,6 +9,7 @@
      phones with system dark mode on (Android "force dark" in Chrome)
      can repaint parts of the page unpredictably — that's what caused
      the stray dark bar on the edge of the screen. -->
+<meta name="x-vybe-storage" content="localStorage-only">
 <title>VYBE • WEAR YOUR ENERGY</title>
 <meta name="description" content="VYBE — متجر ستريت وير رجالي ونسائي بأسلوب جرافيتي جريء وهوية حضرية.">
 <!-- ============ brand icon (favicon + link-preview image) — new sakura emblem, drawn as a self-contained SVG data URI so the tab icon and any shared/searched link carry the mark ============ -->
@@ -32,7 +33,7 @@
 <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Italiana&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 /* ============================================================
    oli — design tokens
@@ -1009,7 +1010,7 @@ footer .font-wordmark{color:#fff!important;}
 </section>
 
 <!-- ============ recently viewed — tracked locally in this browser only
-     (localStorage), never sent anywhere and no relation to Supabase.
+     (localStorage), never sent anywhere and no relation to الخادم.
      Hidden entirely until the visitor has actually opened a quickview. ============ -->
 <section id="recently-viewed-section" class="max-w-7xl mx-auto px-4 pt-2 hidden">
   <div class="flex items-center justify-between mb-2">
@@ -1604,7 +1605,7 @@ footer .font-wordmark{color:#fff!important;}
           <input id="set-low-stock" type="number" min="1" step="1" class="w-full bg-white border border-[var(--line)] rounded-xl px-3 py-2 text-xs focus-ring">
         </div>
       </div>
-      <p class="text-[11px] text-[var(--ink-soft)] mt-2">هذه القيم تتحكم تلقائياً بحساب سلة الشراء وشارة "على وشك النفاد" في لوحة القيادة، وتُحفظ في Supabase فور الضغط على "حفظ الإعدادات".</p>
+      <p class="text-[11px] text-[var(--ink-soft)] mt-2">هذه القيم تتحكم تلقائياً بحساب سلة الشراء وشارة "على وشك النفاد" في لوحة القيادة، وتُحفظ في التخزين المحلي فور الضغط على "حفظ الإعدادات".</p>
     </div>
 
     <div class="mt-2 pt-4" style="border-top:1px dashed var(--line);">
@@ -1814,7 +1815,7 @@ footer .font-wordmark{color:#fff!important;}
       </div>
       <button id="btn-clear-activity-log" type="button" class="text-[11px] font-bold" style="color:var(--ink-soft);text-decoration:underline;">مسح السجل</button>
     </div>
-    <p class="text-[11px] text-[var(--ink-soft)] mb-3">يُسجَّل محلياً في متصفحك فقط لمتابعة آخر التعديلات (منتجات، طلبات، إعدادات) — لا يُرسل لأي خادم ولا علاقة له بـ Supabase.</p>
+    <p class="text-[11px] text-[var(--ink-soft)] mb-3">يُسجَّل محلياً في متصفحك فقط لمتابعة آخر التعديلات (منتجات، طلبات، إعدادات) — لا يُرسل لأي خادم ولا علاقة له بـ الخادم.</p>
     <div id="admin-activity-log" class="max-h-80 overflow-y-auto"></div>
   </div>
   </div>
@@ -1983,7 +1984,7 @@ footer .font-wordmark{color:#fff!important;}
   </div>
 </div>
 
-<!-- ============ Supabase admin login modal ============ -->
+<!-- ============ الخادم admin login modal ============ -->
 <div class="modal-backdrop" id="adminpin-backdrop">
   <div class="modal-sheet">
     <div class="flex items-center justify-between p-5 pb-2">
@@ -1991,7 +1992,7 @@ footer .font-wordmark{color:#fff!important;}
       <button class="modal-close w-9 h-9 rounded-full flex items-center justify-center hover:bg-[var(--pink-pale)] focus-ring" data-target="adminpin"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <form id="admin-auth-form" class="p-5 pt-2 space-y-3">
-      <p class="text-xs text-[var(--ink-soft)] leading-6">سجّلي الدخول بحساب Supabase الذي أضفتِ UUID الخاص به إلى <b>oli_admins</b>.</p>
+      <p class="text-xs text-[var(--ink-soft)] leading-6">سجّلي الدخول بحساب المسؤول المحلي لهذا المتصفح. لا يوجد خادم أو قاعدة بيانات في هذه النسخة.</p>
       <input id="admin-auth-email" type="email" autocomplete="username" required placeholder="البريد الإلكتروني" class="w-full bg-white border border-[var(--line)] rounded-xl px-4 py-3 text-sm focus-ring">
       <input id="admin-auth-password" type="password" autocomplete="current-password" required placeholder="كلمة المرور" class="w-full bg-white border border-[var(--line)] rounded-xl px-4 py-3 text-sm focus-ring">
       <button id="admin-auth-submit" type="submit" class="btn-cute w-full py-3.5 text-sm"><i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول</button>
@@ -2241,7 +2242,7 @@ const qsa = (sel, root) => Array.from((root||document).querySelectorAll(sel));
    price shown across the store/admin (e.g. 9000 -> 9,000). Purely
    presentational: only wraps values right before they're printed, never
    touches the underlying numbers used for calculations, storage or
-   Supabase sync. */
+   الخادم sync. */
 const fmtDZD = (n, d) => {
   const num = Number(n) || 0;
   const digits = d || 0;
@@ -2294,14 +2295,18 @@ const REVIEWS_SEED = [
 const CITIES_SEED = ['قسنطينة','الجزائر العاصمة','وهران','عنابة','سطيف','باتنة','بجاية','تلمسان','بسكرة','البليدة','تيزي وزو','الشلف'];
 
 /* ---------------------------------------------------------------
-   SUPABASE-FIRST STATE ARCHITECTURE
-   - No application data is persisted in localStorage.
-   - Public catalog/config lives in public.oli_public_state.
-   - Admin-only data lives in public.oli_private_state.
-   - Each visitor/admin has a Supabase Auth identity and their personal
-     state lives in public.oli_user_state.
-   - Orders/jobs remain first-class Supabase rows.
+   LOCAL-ONLY STATE ARCHITECTURE
+   - No الخادم / backend / network persistence is used.
+   - All store state is saved in browser localStorage.
+   - Orders, jobs, products, settings, coupons, cart, wishlist,
+     newsletter subscribers and admin session are local to this browser.
 --------------------------------------------------------------- */
+const VYBE_LOCAL_KEY = 'vybe_store_local_v1';
+const VYBE_ADMIN_KEY = 'vybe_local_admin_v1';
+const VYBE_NEWSLETTER_KEY = 'vybe_newsletter_local_v1';
+const VYBE_ADMIN_DEFAULT_EMAIL = 'admin@vybe.local';
+const VYBE_ADMIN_DEFAULT_PASSWORD = 'vybe1234';
+
 function makeDefaultState(){
   const products = JSON.parse(JSON.stringify(PRODUCTS_SEED));
   const categories = JSON.parse(JSON.stringify(CATEGORIES_SEED));
@@ -2317,376 +2322,80 @@ function makeDefaultState(){
   ]};
   return {
     cart:{}, wishlist:[], compare:[], orders:[], jobs:[], employees:[], activeCat:'all',
-    couponUsage:{},
-    wheel,
+    couponUsage:{}, wheel,
     music:{tracks:[],activeId:null,enabled:false,volume:0.5},
     products, categories, reviews, notifCities:cities,
-    settings:JSON.parse(JSON.stringify(SETTINGS_DEFAULTS)),
-    coupons:{},
-    giftWrap:{enabled:false,color:'pink',from:'',to:'',message:''},
+    settings:JSON.parse(JSON.stringify(SETTINGS_DEFAULTS)), coupons:{},
+    giftWrap:{enabled:false,color:'yellow',from:'',to:'',message:''},
     referral:{code:null,redeemed:0,earnedRiyal:0,spentRiyal:0,balance:0},
-    pendingReferral:null,
-    theme:null,
-    activePromo:null
+    pendingReferral:null, theme:null, activePromo:null,
+    newsletterSubscribers:[]
   };
 }
 
 const SETTINGS_DEFAULTS = {
-  siteName:'VYBE',
-  heroTitle:'WEAR YOUR ENERGY',
+  siteName:'VYBE', heroTitle:'WEAR YOUR ENERGY',
   heroSubtitle:'ستريت وير للرجال والنساء — قطع Oversize، تيشيرتات، هوديز وبناطيل بهوية جريئة.',
   tickerText:'VYBE STREETWEAR • شحن سريع • تبديل سهل • ادخل عالمك بلا حدود',
-  whatsapp:'213561368108',
-  instagram:'olishop153',
-  facebook:'https://www.facebook.com/share/1Bi7rQpYC5/',
-  tiktok:'oli.shop53',
-  telegram:'olishop76',
-  showFakeViews:true,
-  fakeViewsMin:8, fakeViewsMax:64,
-  showPurchaseNotif:true,
-  notifIntervalSec:9,
-  colorPink:'#F2789D',
-  colorGold:'#D9A566',
-  colorSky:'#FDEEF2',
-  deliveryFee:750,
-  freeDeliveryMin:9000,
-  giftWrapFee:450,
-  lowStockThreshold:6,
-  promoEngine:{
-    enabled:true,
-    mode:'smart',
-    minStock:1,
-    intervalSec:11,
-    cooldownMin:8,
-    maxPerSession:8,
-    onlyDiscounted:false,
-    onlyLowStock:false,
-    allowFallback:true
-  },
+  whatsapp:'213561368108', instagram:'olishop153', facebook:'https://www.facebook.com/share/1Bi7rQpYC5/',
+  tiktok:'oli.shop53', telegram:'olishop76', showFakeViews:true, fakeViewsMin:8, fakeViewsMax:64,
+  showPurchaseNotif:true, notifIntervalSec:9, colorPink:'#FFC400', colorGold:'#FFB000', colorSky:'#F5F5F5',
+  deliveryFee:750, freeDeliveryMin:9000, giftWrapFee:450, lowStockThreshold:6,
+  promoEngine:{enabled:true,mode:'smart',minStock:1,intervalSec:11,cooldownMin:8,maxPerSession:8,onlyDiscounted:false,onlyLowStock:false,allowFallback:true},
   promoMeta:{}
 };
 
 let state = makeDefaultState();
-let PRODUCTS = state.products;
-let CATEGORIES = state.categories;
-let REVIEWS = state.reviews;
-let cloudReady = false;
+let PRODUCTS = state.products, CATEGORIES = state.categories, REVIEWS = state.reviews;
+let cloudReady = true;
 let cloudWriteQueue = Promise.resolve();
 
 function normalizeState(){
-  const d = makeDefaultState();
-  state = Object.assign(d, state || {});
-  state.cart = state.cart || {};
-  state.wishlist = Array.isArray(state.wishlist) ? state.wishlist : [];
-  state.compare = Array.isArray(state.compare) ? state.compare : [];
-  state.orders = Array.isArray(state.orders) ? state.orders : [];
-  state.jobs = Array.isArray(state.jobs) ? state.jobs : [];
-  state.employees = Array.isArray(state.employees) ? state.employees : [];
+  const d = makeDefaultState(); state = Object.assign(d, state || {});
+  state.cart = state.cart || {}; state.wishlist = Array.isArray(state.wishlist)?state.wishlist:[];
+  state.compare = Array.isArray(state.compare)?state.compare:[]; state.orders = Array.isArray(state.orders)?state.orders:[];
+  state.jobs = Array.isArray(state.jobs)?state.jobs:[]; state.employees = Array.isArray(state.employees)?state.employees:[];
   state.couponUsage = state.couponUsage || {};
-  state.products = Array.isArray(state.products) && state.products.length ? state.products : d.products;
-  state.categories = Array.isArray(state.categories) && state.categories.length ? state.categories : d.categories;
-  state.reviews = Array.isArray(state.reviews) && state.reviews.length ? state.reviews : d.reviews;
-  state.notifCities = Array.isArray(state.notifCities) && state.notifCities.length ? state.notifCities : d.notifCities;
-  state.settings = Object.assign({}, d.settings, state.settings || {});
-  state.music = Object.assign({}, d.music, state.music || {});
-  state.music.tracks = Array.isArray(state.music.tracks) ? state.music.tracks : [];
-  state.settings = Object.assign({}, d.settings, state.settings || {});
-  state.settings.promoEngine = Object.assign({}, d.settings.promoEngine || {}, state.settings.promoEngine || {});
-  state.settings.promoMeta = Object.assign({}, d.settings.promoMeta || {}, state.settings.promoMeta || {});
-  state.wheel = Object.assign({}, d.wheel, state.wheel || {});
-  state.wheel.segments = Array.isArray(state.wheel.segments) && state.wheel.segments.length ? state.wheel.segments : d.wheel.segments;
-  state.giftWrap = Object.assign({}, d.giftWrap, state.giftWrap || {});
-  state.referral = Object.assign({}, d.referral, state.referral || {});
-  state.activeCat = state.activeCat || 'all';
-  state.pendingReferral = state.pendingReferral || null;
-  state.activePromo = state.activePromo || null;
-  PRODUCTS = state.products; CATEGORIES = state.categories; REVIEWS = state.reviews;
-}
-normalizeState();
-
-function publicCloudData(){
-  return {
-    products:state.products,
-    categories:state.categories,
-    reviews:state.reviews,
-    notifCities:state.notifCities,
-    settings:state.settings,
-    coupons:state.coupons || {},
-    // عداد استخدام الأكواد صار عام — أي زائرة تقدر تشوفه عبر "استخدام كود"
-    // في الموقع، مو بس الإدارة (كان قبل محصور في oli_private_state فقط).
-    couponUsage:state.couponUsage || {},
-    wheel:{limitMode:state.wheel.limitMode,segments:state.wheel.segments},
-    music:state.music
-  };
-}
-function userCloudData(){
-  return {
-    cart:state.cart,
-    wishlist:state.wishlist,
-    compare:state.compare,
-    activeCat:state.activeCat,
-    giftWrap:state.giftWrap,
-    referral:state.referral,
-    pendingReferral:state.pendingReferral,
-    wheelLastSpinDate:state.wheel?.lastSpinDate || null,
-    activePromo:state.activePromo || null
-  };
-}
-function privateCloudData(){
-  return {employees:state.employees || [], couponUsage:state.couponUsage || {}};
+  state.products = Array.isArray(state.products)&&state.products.length?state.products:d.products;
+  state.categories = Array.isArray(state.categories)&&state.categories.length?state.categories:d.categories;
+  state.reviews = Array.isArray(state.reviews)&&state.reviews.length?state.reviews:d.reviews;
+  state.notifCities = Array.isArray(state.notifCities)&&state.notifCities.length?state.notifCities:d.notifCities;
+  state.settings = Object.assign({},d.settings,state.settings||{});
+  state.music = Object.assign({},d.music,state.music||{}); state.music.tracks=Array.isArray(state.music.tracks)?state.music.tracks:[];
+  state.settings.promoEngine=Object.assign({},d.settings.promoEngine,state.settings.promoEngine||{});
+  state.settings.promoMeta=Object.assign({},d.settings.promoMeta,state.settings.promoMeta||{});
+  state.wheel=Object.assign({},d.wheel,state.wheel||{});
+  state.wheel.segments=Array.isArray(state.wheel.segments)&&state.wheel.segments.length?state.wheel.segments:d.wheel.segments;
+  state.giftWrap=Object.assign({},d.giftWrap,state.giftWrap||{}); state.referral=Object.assign({},d.referral,state.referral||{});
+  state.newsletterSubscribers=Array.isArray(state.newsletterSubscribers)?state.newsletterSubscribers:[];
+  state.activeCat=state.activeCat||'all'; state.pendingReferral=state.pendingReferral||null; state.activePromo=state.activePromo||null;
+  PRODUCTS=state.products; CATEGORIES=state.categories; REVIEWS=state.reviews;
 }
 
-function saveState(reason='state change'){
+function loadLocalState(){
+  try{
+    const raw=localStorage.getItem(VYBE_LOCAL_KEY);
+    if(raw) state=JSON.parse(raw);
+  }catch(e){ console.warn('VYBE localStorage read failed',e); }
   normalizeState();
-  try{
-    if(typeof PROMO_CODES!=='undefined') state.coupons = Object.assign({}, PROMO_CODES);
-  }catch(e){}
-  return syncCloudState(reason);
+  try{ if(typeof PROMO_CODES!=='undefined') Object.assign(PROMO_CODES,state.coupons||{}); }catch(e){}
 }
+loadLocalState();
 
-/* ---------------------------------------------------------------
-   Debounced save — for state changes that are frequent but low-stakes
-   (category filter clicks, wishlist/cart toggles, compare list): every
-   one of those used to fire an immediate Supabase upsert on its own,
-   so a visitor casually flipping through filters or hearting a few
-   products could trigger a dozen+ network writes in seconds for
-   nothing that's actually urgent to persist.
-   Now those call sites collapse into ONE write, ~1.2s after the
-   visitor stops interacting — the in-memory state (and every render)
-   still updates instantly, only the cloud write is coalesced. Anything
-   that genuinely needs a confirmed write (checkout, order status,
-   job submission, all admin actions) still calls saveState()/
-   syncCloudState() directly and is untouched by this.
-   If the tab is hidden or closed before the delay elapses, the pending
-   save is flushed immediately instead of being lost.
---------------------------------------------------------------- */
-let saveDebounceTimer = null;
-let saveDebouncePending = false;
-function saveStateDebounced(reason='state change', delay=1200){
-  saveDebouncePending = true;
-  clearTimeout(saveDebounceTimer);
-  saveDebounceTimer = setTimeout(()=>{
-    saveDebouncePending = false;
-    saveState(reason);
-  }, delay);
-}
-function flushPendingSave(){
-  if(!saveDebouncePending) return;
-  clearTimeout(saveDebounceTimer);
-  saveDebouncePending = false;
-  saveState('حفظ قبل مغادرة الصفحة');
-}
-document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') flushPendingSave(); });
-window.addEventListener('pagehide', flushPendingSave);
+function publicCloudData(){ return {products:state.products,categories:state.categories,reviews:state.reviews,notifCities:state.notifCities,settings:state.settings,coupons:state.coupons||{},couponUsage:state.couponUsage||{},wheel:{limitMode:state.wheel.limitMode,segments:state.wheel.segments},music:state.music}; }
+function userCloudData(){ return {cart:state.cart,wishlist:state.wishlist,compare:state.compare,activeCat:state.activeCat,giftWrap:state.giftWrap,referral:state.referral,pendingReferral:state.pendingReferral,wheelLastSpinDate:state.wheel?.lastSpinDate||null,activePromo:state.activePromo||null}; }
+function privateCloudData(){ return {employees:state.employees||[],couponUsage:state.couponUsage||{},newsletterSubscribers:state.newsletterSubscribers||[]}; }
 
-function reportCloudError(error, action){
-  console.error('OLI Supabase error:', action, error);
-  // TEMPORARY DEBUG VERBOSITY: PostgREST/Postgres errors carry far more
-  // detail than error.message alone (a "code" like 42501/23505, a
-  // "details" string naming the exact failing policy/constraint, and a
-  // "hint"). Surfacing all of it here — instead of just the generic
-  // message — turns the visitor's own screen into a full diagnostic
-  // readout without needing desktop DevTools, which is essential while
-  // this specific RLS issue is still unexplained. Safe to trim back to
-  // just error.message once the root cause is confirmed and fixed.
-  const parts = [error?.message || String(error || 'خطأ غير معروف')];
-  if(error?.code) parts.push('code: ' + error.code);
-  if(error?.details) parts.push('details: ' + error.details);
-  if(error?.hint) parts.push('hint: ' + error.hint);
-  const msg = parts.join(' | ');
-  if(typeof toast === 'function') toast('تعذر حفظ التغيير في Supabase: ' + msg, 'fa-triangle-exclamation', 12000);
-}
-
-function syncCloudState(reason='state change'){
-  cloudWriteQueue = cloudWriteQueue.then(async()=>{
-    if(!OLI_SB){ reportCloudError(new Error('مكتبة Supabase غير متوفرة (تأكدي من الاتصال بالإنترنت)'), reason); return false; }
-    if(!oliCurrentUser){
-      // Identity was never established (or was lost) — try once instead of
-      // silently dropping the change forever.
-      try{ await ensureSupabaseIdentity(); }catch(e){ reportCloudError(e, reason); return false; }
-    }
-    if(!oliCurrentUser){ reportCloudError(new Error('تعذر إنشاء هوية Supabase للزائر'), reason); return false; }
-    if(!cloudReady){
-      // The initial hydrate never finished/succeeded — this used to mean
-      // every save silently no-op'd forever with zero indication to the
-      // user. Retry hydration once here so a transient failure at load
-      // time doesn't permanently block persistence for the whole session.
-      await hydrateCloudState(isAdminAuthed());
-      if(!cloudReady){ reportCloudError(new Error('لم يتم الاتصال بقاعدة بيانات Supabase بعد'), reason); return false; }
-    }
-    const now = new Date().toISOString();
-    async function attemptWrites(){
-      const writes = [];
-      writes.push(OLI_SB.from('oli_user_state').upsert({
-        user_id:oliCurrentUser.id,
-        data:userCloudData(),
-        updated_at:now
-      }, {onConflict:'user_id'}));
-
-      if(isAdminAuthed()){
-        writes.push(OLI_SB.from('oli_public_state').upsert({id:'main',data:publicCloudData(),updated_at:now},{onConflict:'id'}));
-        writes.push(OLI_SB.from('oli_private_state').upsert({id:'main',data:privateCloudData(),updated_at:now},{onConflict:'id'}));
-      }
-      if(Array.isArray(state.orders) && state.orders.length){
-        // IMPORTANT: only (re-)upload orders that haven't been confirmed
-        // saved yet, unless this is an admin session. Every previous
-        // version of this function re-uploaded the ENTIRE state.orders
-        // array on every single save (add to cart, wishlist, anything).
-        // Once an order's row already exists, upsert() turns into an
-        // UPDATE — and regular visitors have no UPDATE policy on
-        // oli_orders (only admins do, since order status changes are
-        // admin-only). So the very next action after placing ANY order
-        // in that browser session would fail with an RLS violation on
-        // oli_orders, even though it had nothing to do with orders.
-        //
-        // ROOT CAUSE (found via Supabase Postgres logs, confirmed against
-        // Postgres docs): upsert() always compiles to
-        // INSERT ... ON CONFLICT DO UPDATE. Per Postgres, that clause
-        // ALWAYS requires SELECT permission on the table and checks the
-        // proposed row against the table's SELECT policy — even on a
-        // brand-new row that has no actual conflict. Since oli_orders'
-        // SELECT policy is admin-only, a non-admin visitor's upsert was
-        // rejected with "new row violates row-level security policy" on
-        // every single insert, regardless of the INSERT policy being
-        // fully permissive. Plain insert() has no such requirement — it
-        // only needs the INSERT policy — so non-admins insert directly.
-        const ordersToSync = isAdminAuthed() ? state.orders : state.orders.filter(o=>!o._synced);
-        if(ordersToSync.length){
-          const rows = ordersToSync.map(o=>{ const {_synced, ...payload} = o; return {id:o.id, payload}; });
-          const q = isAdminAuthed()
-            ? OLI_SB.from('oli_orders').upsert(rows, {onConflict:'id'})
-            : OLI_SB.from('oli_orders').insert(rows);
-          writes.push(q.then(r=>{ if(!r.error) ordersToSync.forEach(o=>{ o._synced = true; }); return r; }));
-        }
-      }
-      if(Array.isArray(state.jobs) && state.jobs.length){
-        // Same reasoning as orders above.
-        const jobsToSync = isAdminAuthed() ? state.jobs : state.jobs.filter(j=>!j._synced);
-        if(jobsToSync.length){
-          const rows = jobsToSync.map(j=>{ const {_synced, ...payload} = j; return {id:j.id, payload}; });
-          const q = isAdminAuthed()
-            ? OLI_SB.from('oli_jobs').upsert(rows, {onConflict:'id'})
-            : OLI_SB.from('oli_jobs').insert(rows);
-          writes.push(q.then(r=>{ if(!r.error) jobsToSync.forEach(j=>{ j._synced = true; }); return r; }));
-        }
-      }
-      const results = await Promise.all(writes);
-      return results.find(r=>r?.error);
-    }
-
-    let failed = await attemptWrites();
-    // RETRY-ON-STALE-IDENTITY: "new row violates row-level security policy"
-    // on a write path that should be allowed (own user_state row, or an
-    // insert-only table like orders/jobs) almost always means the cached
-    // auth session went stale mid-session — auth.uid() is resolving to
-    // null server-side even though oliCurrentUser still looks populated
-    // client-side. One silent retry after forcing a fresh identity clears
-    // this without the customer ever seeing it, instead of failing outright
-    // on what looks to them like a random, unexplained rejection.
-    if(failed?.error && /row-level security/i.test(failed.error.message || '')){
-      try{ await OLI_SB.auth.signOut(); }catch(e){}
-      oliCurrentUser = null;
-      try{ await ensureSupabaseIdentity(); }catch(e){}
-      if(oliCurrentUser) failed = await attemptWrites();
-    }
-    if(failed?.error){ reportCloudError(failed.error, reason); return false; }
-    return true;
-  }).catch(e=>{ reportCloudError(e, reason); return false; });
-  return cloudWriteQueue;
-}
-
-async function hydrateCloudState(adminMode=false){
-  if(!OLI_SB) return false;
+function syncLocalState(reason='state change'){
   normalizeState();
-
-  if(!oliCurrentUser){
-    try{ await ensureSupabaseIdentity(); }
-    catch(e){ reportCloudError(e,'إنشاء هوية الزائر في Supabase'); return false; }
-  }
-  if(!oliCurrentUser) return false;
-
-  // NOTE: reading existing cloud data and being *able to write* are two
-  // separate concerns. Previously, if either read below failed (e.g. a
-  // missing table or an RLS policy blocking SELECT), the whole function
-  // threw before `cloudReady` was ever set — which permanently disabled
-  // saving (cart/wishlist/orders/etc.) for the rest of the session with
-  // no further error shown to the visitor. Now a read failure is reported
-  // but does not block writes from being attempted afterwards.
-  let d = null;
-  try{
-    const [pubRes,userRes] = await Promise.all([
-      OLI_SB.from('oli_public_state').select('data').eq('id','main').maybeSingle(),
-      OLI_SB.from('oli_user_state').select('data').eq('user_id',oliCurrentUser.id).maybeSingle()
-    ]);
-    if(pubRes.error) throw pubRes.error;
-    if(userRes.error) throw userRes.error;
-
-    d=pubRes.data?.data;
-    if(d && Object.keys(d).length){
-      if(Array.isArray(d.products) && d.products.length) state.products=d.products;
-      if(Array.isArray(d.categories) && d.categories.length) state.categories=d.categories;
-      if(Array.isArray(d.reviews) && d.reviews.length) state.reviews=d.reviews;
-      if(Array.isArray(d.notifCities) && d.notifCities.length) state.notifCities=d.notifCities;
-      if(d.settings) state.settings=Object.assign({},state.settings,d.settings);
-      if(d.coupons) state.coupons=d.coupons;
-      if(d.couponUsage) state.couponUsage=d.couponUsage;
-      if(d.wheel) state.wheel=Object.assign({},state.wheel,d.wheel);
-      if(d.music) state.music=d.music;
-    }
-    const u=userRes.data?.data;
-    if(u){
-      if(u.cart) state.cart=u.cart;
-      if(Array.isArray(u.wishlist)) state.wishlist=u.wishlist;
-      if(Array.isArray(u.compare)) state.compare=u.compare;
-      if(u.activeCat) state.activeCat=u.activeCat;
-      if(u.giftWrap) state.giftWrap=Object.assign({},state.giftWrap,u.giftWrap);
-      if(u.referral) state.referral=Object.assign({},state.referral,u.referral);
-      if(Object.prototype.hasOwnProperty.call(u,'pendingReferral')) state.pendingReferral=u.pendingReferral;
-      if(Object.prototype.hasOwnProperty.call(u,'wheelLastSpinDate')) state.wheel.lastSpinDate=u.wheelLastSpinDate;
-      if(Object.prototype.hasOwnProperty.call(u,'activePromo')) state.activePromo=u.activePromo;
-    }
-    normalizeState();
-    if(typeof PROMO_CODES!=='undefined') Object.assign(PROMO_CODES,state.coupons||{});
-  }catch(e){
-    reportCloudError(e,'تحميل البيانات من Supabase (قراءة oli_public_state / oli_user_state)');
-  }
-
-  if(adminMode || isAdminAuthed()){
-    try{
-      const [orders,jobs,priv] = await Promise.all([
-        OLI_SB.from('oli_orders').select('id,payload').order('created_at',{ascending:true}),
-        OLI_SB.from('oli_jobs').select('id,payload').order('created_at',{ascending:true}),
-        OLI_SB.from('oli_private_state').select('data').eq('id','main').maybeSingle()
-      ]);
-      if(orders.error) throw orders.error;
-      if(jobs.error) throw jobs.error;
-      if(priv.error) throw priv.error;
-      state.orders=(orders.data||[]).map(r=>r.payload).filter(Boolean);
-      invalidateCoPurchaseCache();
-      state.jobs=(jobs.data||[]).map(r=>r.payload).filter(Boolean);
-      if(priv.data?.data){
-        if(Array.isArray(priv.data.data.employees)) state.employees=priv.data.data.employees;
-        if(priv.data.data.couponUsage) state.couponUsage=priv.data.data.couponUsage;
-      }
-      if(typeof ensureEmployeeCodes==='function') ensureEmployeeCodes();
-    }catch(e){
-      reportCloudError(e,'تحميل بيانات الإدارة من Supabase (orders/jobs/private_state)');
-    }
-  }
-
-  // We have a confirmed Supabase Auth identity, so writes (upsert) are
-  // safe to attempt from here on, independent of whether the reads above
-  // succeeded. This is the key fix: cloudReady must not stay stuck false
-  // just because a SELECT failed.
-  cloudReady=true;
-
-  try{
-    // If this is the first install, the admin seeds the public state once.
-    if(!d && isAdminAuthed()) await syncCloudState('initial Supabase seed');
-  }catch(e){ reportCloudError(e,'تهيئة بيانات Supabase الأولية'); }
-
-  return true;
+  try{ if(typeof PROMO_CODES!=='undefined') state.coupons=Object.assign({},PROMO_CODES); }catch(e){}
+  try{ localStorage.setItem(VYBE_LOCAL_KEY,JSON.stringify(state)); return true; }
+  catch(e){ console.error('VYBE local save failed:',e); if(typeof toast==='function') toast('تعذر حفظ البيانات محلياً','fa-triangle-exclamation'); return false; }
 }
+function saveState(reason='state change'){ return syncLocalState(reason); }
+
+async function syncCloudState(reason='state change'){ return syncLocalState(reason); }
+async function hydrateCloudState(adminMode=false){ loadLocalState(); cloudReady=true; return true; }
 
 /* Graceful placeholder shown instead of the browser's broken-image icon +
    overlapping alt text whenever a product image URL fails to load. */
@@ -2941,7 +2650,7 @@ function renderWishlistDrawer(){
 --------------------------------------------------------------- */
 /* رسوم التوصيل والحد الأدنى للشحن المجاني وأجرة التغليف كانت أرقاماً
    ثابتة في الكود؛ أصبحت الآن تُقرأ من إعدادات الموقع (state.settings)
-   القابلة للتعديل من لوحة التحكم، ومحفوظة تلقائياً في Supabase. */
+   القابلة للتعديل من لوحة التحكم، ومحفوظة تلقائياً محلياً في المتصفح. */
 function DELIVERY_FEE_(){ return Number(state.settings.deliveryFee ?? 25); }
 function FREE_DELIVERY_MIN_(){ return Number(state.settings.freeDeliveryMin ?? 300); }
 function GIFT_WRAP_FEE_(){ return Number(state.settings.giftWrapFee ?? 15); }
@@ -3139,7 +2848,7 @@ function renderRecommendationRow(containerId, productIds, heading){
 /* ---------------------------------------------------------------
    Recently viewed — purely a client-side convenience. Stored in this
    browser's localStorage only (key below), never written to the
-   `state` object and never touches Supabase in any way. Just makes
+   `state` object and never touches الخادم in any way. Just makes
    it easy for a shopper to get back to something she opened earlier.
 --------------------------------------------------------------- */
 const OLI_RECENT_KEY = 'oli_recently_viewed_v1';
@@ -3302,106 +3011,32 @@ qsa('.tab-item, .nav-link').forEach(a=>{
   if(a.tagName==='A') a.addEventListener('click', ()=> $('mobile-menu').classList.add('hidden'));
 });
 
-/* admin authentication — Supabase Auth + oli_admins */
-const OLI_SUPABASE_URL = 'https://sabeclvctcnhwddnemhl.supabase.co';
-const OLI_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_cY6p4UJleUSFG50H1ZqxbQ_UvWItpJs';
-const OLI_SB = (window.supabase && typeof window.supabase.createClient === 'function')
-  ? window.supabase.createClient(OLI_SUPABASE_URL, OLI_SUPABASE_PUBLISHABLE_KEY, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})
-  : null;
+/* LOCAL ADMIN AUTHENTICATION — no server required */
+const OLI_SB = null;
 let oliCurrentUser = null;
 let oliAdminVerified = false;
-if(OLI_SB){
-  OLI_SB.auth.onAuthStateChange((event, session)=>{
-    oliCurrentUser = session?.user || null;
-    if(event === 'SIGNED_OUT') oliAdminVerified = false;
-  });
-}
-
-function isAdminAuthed(){ return !!oliCurrentUser && oliAdminVerified === true; }
-
-async function verifyOliAdmin(){
-  if(!OLI_SB || !oliCurrentUser) return false;
-  const { data, error } = await OLI_SB.rpc('oli_is_admin');
-  if(error) throw error;
-  return data === true;
-}
-
-async function ensureSupabaseIdentity(){
-  if(!OLI_SB) return null;
-  const {data:sessionData}=await OLI_SB.auth.getSession();
-  const cachedUser=sessionData?.session?.user||null;
-  if(cachedUser){
-    const {data:verified,error:verifyErr}=await OLI_SB.auth.getUser();
-    if(!verifyErr && verified?.user){
-      oliCurrentUser=verified.user;
-      try{oliAdminVerified=await verifyOliAdmin();}catch(e){oliAdminVerified=false;}
-      return oliCurrentUser;
-    }
-    try{await OLI_SB.auth.signOut();}catch(e){}
-    oliCurrentUser=null; oliAdminVerified=false;
-  }
-  const anon=await OLI_SB.auth.signInAnonymously();
-  if(anon.error) throw anon.error;
-  oliCurrentUser=anon.data?.user||anon.data?.session?.user||null;
-  oliAdminVerified=false;
-  if(!oliCurrentUser) throw new Error('تعذر إنشاء هوية زائرة في Supabase Auth');
-  return oliCurrentUser;
-}
-
-async function restoreSupabaseSession(){
-  if(!OLI_SB){ console.warn('Supabase SDK unavailable.'); return; }
-  try{ await ensureSupabaseIdentity(); }
-  catch(e){ console.warn('OLI Supabase identity restore failed', e); }
-}
+function isAdminAuthed(){ return oliAdminVerified === true; }
+async function verifyOliAdmin(){ return isAdminAuthed(); }
+async function ensureالخادمIdentity(){ return null; }
+async function restoreالخادمSession(){ return true; }
 
 async function openAdminLogin(){
-  $('admin-auth-error').textContent = '';
-  if(!OLI_SB){ $('admin-auth-error').textContent = 'تعذر تحميل خدمة Supabase. افتحي الملف مع اتصال بالإنترنت ثم أعيدي المحاولة.'; return; }
-  const { data } = await OLI_SB.auth.getSession();
-  oliCurrentUser = data?.session?.user || null;
-  if(oliCurrentUser){
-    try{
-      if(await verifyOliAdmin()){
-        oliAdminVerified = true;
-        showAdminPanel();
-        return;
-      }
-    }catch(e){}
-  }
-  $('admin-auth-email').value = oliCurrentUser?.email || '';
-  $('admin-auth-password').value = '';
-  openModal('adminpin');
-  setTimeout(()=> $('admin-auth-email')?.focus(), 80);
+  $('admin-auth-error').textContent='';
+  $('admin-auth-email').value=localStorage.getItem(VYBE_ADMIN_KEY+'_email') || VYBE_ADMIN_DEFAULT_EMAIL;
+  $('admin-auth-password').value='';
+  openModal('adminpin'); setTimeout(()=> $('admin-auth-password')?.focus(),80);
 }
-
 async function adminLogin(email,password){
-  const btn = $('admin-auth-submit');
-  const err = $('admin-auth-error');
-  err.textContent = '';
-  btn.disabled = true;
-  btn.style.opacity = '.65';
+  const btn=$('admin-auth-submit'), err=$('admin-auth-error'); err.textContent=''; btn.disabled=true; btn.style.opacity='.65';
   try{
-    const { data, error } = await OLI_SB.auth.signInWithPassword({email:email.trim(), password});
-    if(error) throw error;
-    oliCurrentUser = data?.user || data?.session?.user || null;
-    const isAdmin = await verifyOliAdmin();
-    if(!isAdmin){
-      await OLI_SB.auth.signOut();
-      oliCurrentUser = null;
-      throw new Error('هذا الحساب ليس ضمن مسؤولي متجر OLI.');
-    }
-    oliAdminVerified = true;
-    closeModal('adminpin');
-    showAdminPanel();
-    await hydrateCloudState(true);
-    renderAdmin();
-  }catch(e){
-    console.error(e);
-    err.textContent = e?.message || 'تعذر تسجيل الدخول. تأكدي من البريد وكلمة المرور.';
-  }finally{
-    btn.disabled = false;
-    btn.style.opacity = '';
-  }
+    const savedEmail=localStorage.getItem(VYBE_ADMIN_KEY+'_email') || VYBE_ADMIN_DEFAULT_EMAIL;
+    const savedPassword=localStorage.getItem(VYBE_ADMIN_KEY+'_password') || VYBE_ADMIN_DEFAULT_PASSWORD;
+    if(email.trim()!==savedEmail || password!==savedPassword) throw new Error('البريد أو كلمة المرور غير صحيحة.');
+    oliCurrentUser={email:savedEmail}; oliAdminVerified=true;
+    localStorage.setItem(VYBE_ADMIN_KEY+'_session','1');
+    closeModal('adminpin'); showAdminPanel(); await hydrateCloudState(true); renderAdmin();
+  }catch(e){ err.textContent=e?.message||'تعذر تسجيل الدخول.'; }
+  finally{ btn.disabled=false; btn.style.opacity=''; }
 }
 
 $('admin-auth-form')?.addEventListener('submit', async (e)=>{
@@ -3421,11 +3056,8 @@ function hideAdminPanel(){
   document.documentElement.classList.remove('admin-mode');
 }
 async function logoutOliAdmin(){
-  try{ await OLI_SB.auth.signOut(); }catch(e){}
-  oliCurrentUser = null;
-  oliAdminVerified = false;
-  hideAdminPanel();
-  try{ await ensureSupabaseIdentity(); await hydrateCloudState(false); }catch(e){ console.warn(e); }
+  oliCurrentUser=null; oliAdminVerified=false; localStorage.removeItem(VYBE_ADMIN_KEY+'_session'); hideAdminPanel();
+  await hydrateCloudState(false);
 }
 function toggleAdmin(){
   const panel = $('admin-panel');
@@ -3464,14 +3096,11 @@ $('btn-admin-mobile').addEventListener('click', (e)=>{ e.preventDefault(); $('mo
 
 $('admin-pass-form').addEventListener('submit', async (e)=>{
   e.preventDefault();
-  const val = $('admin-pass-new').value.trim();
-  const msg = $('admin-pass-msg');
+  const val=$('admin-pass-new').value.trim(), msg=$('admin-pass-msg');
   if(val.length<6){ msg.style.color='#c94f4f'; msg.textContent='كلمة المرور يجب أن تكون 6 أحرف/أرقام على الأقل'; return; }
-  if(!OLI_SB || !oliCurrentUser || !isAdminAuthed()){ msg.style.color='#c94f4f'; msg.textContent='يجب تسجيل دخول المسؤول أولاً'; return; }
-  const {error} = await OLI_SB.auth.updateUser({password:val});
-  if(error){ msg.style.color='#c94f4f'; msg.textContent=error.message; return; }
-  msg.style.color = 'var(--pink-deep)';
-  msg.textContent = 'تم تحديث كلمة مرور حساب Supabase بنجاح';
+  if(!isAdminAuthed()){ msg.style.color='#c94f4f'; msg.textContent='يجب تسجيل دخول المسؤول أولاً'; return; }
+  localStorage.setItem(VYBE_ADMIN_KEY+'_password',val);
+  msg.style.color='var(--yellow)'; msg.textContent='تم تحديث كلمة مرور المسؤول محلياً على هذا المتصفح';
   $('admin-pass-new').value='';
 });
 
@@ -3607,7 +3236,7 @@ $('btn-wheel-save').addEventListener('click', ()=>{
 
 /* ---------------------------------------------------------------
    Promotion intelligence core — uses only the existing PRODUCTS/orders/state.
-   No new tables, columns, RPCs or Supabase calls are introduced.
+   No new tables, columns, RPCs or الخادم calls are introduced.
 --------------------------------------------------------------- */
 const PROMO_GROUPS = ['employees','celebrities','store'];
 let promoSessionCount = 0;
@@ -3810,7 +3439,7 @@ function cosmosExecutePortal(){
 function cosmosExecuteImmunity(){
   const c=cosmosSettings(), before=c.blockedProductIds.length; c.blockedProductIds=c.blockedProductIds.filter(id=>{const p=findProduct(id);return p&&Number(p.stock)>0;});
   if(c.featuredProductId){const p=findProduct(c.featuredProductId);if(!p||Number(p.stock)<=0)c.featuredProductId=null;}
-  rebuildPromotionAccounting(); saveState('OLI COSMOS: إصلاح المناعة'); initHeroSpotlight(); renderCosmos(); toast('تم تنظيف الحالات غير الصالحة دون لمس Supabase','fa-shield-halved');
+  rebuildPromotionAccounting(); saveState('OLI COSMOS: إصلاح المناعة'); initHeroSpotlight(); renderCosmos(); toast('تم تنظيف الحالات غير الصالحة دون لمس الخادم','fa-shield-halved');
 }
 function renderCosmos(){
   const root=$('tab-cosmos'); if(!root) return;
@@ -4128,11 +3757,11 @@ $('checkout-form').addEventListener('submit', async (e)=>{
   // CRITICAL FIX: this handler used to push the order into `state.orders`,
   // clear the cart, and show the "success" screen UNCONDITIONALLY —
   // *before* even checking whether saveState() actually managed to write
-  // the order to Supabase. saveState()/syncCloudState() never throws on
+  // the order to الخادم. saveState()/syncCloudState() never throws on
   // failure (it catches every error internally and just returns false),
   // so a customer whose order failed to insert (network hiccup, RLS
   // rejection, table missing, etc.) would still see "تم طلبك بنجاح" while
-  // NOTHING was persisted anywhere — not in Supabase, and (by design,
+  // NOTHING was persisted anywhere — not in الخادم, and (by design,
   // per this app's cloud-only architecture) not in localStorage either.
   // Now we: disable the button + show a sending state, actually check the
   // boolean saveState() returns, and on failure we roll the cart/order
@@ -4283,11 +3912,7 @@ $('btn-track').addEventListener('click', async ()=>{
   const val = $('track-input').value.trim().toUpperCase();
   if(!val){ toast('اكتبي رقم الطلب أولاً','fa-magnifying-glass'); return; }
   let order = state.orders.find(o=>o.id===val) || null;
-  if(OLI_SB){
-    const {data,error}=await OLI_SB.rpc('oli_track_order',{p_order_id:val});
-    if(!error && data) order=data;
-    else if(error) reportCloudError(error,'تتبع الطلب');
-  }
+  /* Local-only: orders are stored in this browser's localStorage. */
   if(!order){ toast('ما لقينا طلب بهذا الرقم', 'fa-magnifying-glass'); return; }
   $('track-empty').classList.add('hidden');
   $('track-result').classList.remove('hidden');
@@ -4344,7 +3969,7 @@ $('job-form').addEventListener('submit', async (e)=>{
   // CRITICAL FIX (same class of bug already fixed on checkout): this used
   // to push the job into state.jobs and show "تم استلام طلبك" + reset the
   // form UNCONDITIONALLY, without ever checking whether saveState() actually
-  // managed to write the row to Supabase. A candidate whose application
+  // managed to write the row to الخادم. A candidate whose application
   // failed to save (RLS rejection, network hiccup, etc.) would still see a
   // success toast and a cleared form while NOTHING was persisted anywhere.
   // Now we disable the button, check the boolean saveState() returns, and
@@ -4387,18 +4012,10 @@ $('newsletter-form').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const email = String(new FormData(e.target).get('email')||'').trim().toLowerCase();
   if(!email) return;
-  if(!OLI_SB){ toast('تعذر الاتصال بـ Supabase','fa-triangle-exclamation'); return; }
-  const {error} = await OLI_SB.from('oli_newsletter_subscribers').insert({email});
-  if(error){
-    if(error.code==='23505'){
-      toast('هذا البريد مشترك بالفعل', 'fa-envelope');
-      e.target.reset();
-      return;
-    }
-    reportCloudError(error,'الاشتراك في النشرة البريدية');
-    return;
-  }
-  toast('تم الاشتراك بنجاح', 'fa-envelope');
+  if(state.newsletterSubscribers.includes(email)){ toast('هذا البريد مشترك بالفعل','fa-envelope'); e.target.reset(); return; }
+  state.newsletterSubscribers.push(email);
+  saveState('اشتراك النشرة البريدية');
+  toast('تم الاشتراك بنجاح','fa-envelope');
   e.target.reset();
 });
 
@@ -4854,7 +4471,7 @@ function registerEmployeeCode(emp){
   state.coupons = PROMO_CODES;
 }
 // شبكة أمان: أي موظفة قديمة (اتحفظت قبل إضافة نظام اختيار الكود يدوياً) أو
-// وصلت لتوّها من Supabase بدون كود/نسبة، تاخذ قيم افتراضية أول ما لوحة
+// وصلت لتوّها من الخادم بدون كود/نسبة، تاخذ قيم افتراضية أول ما لوحة
 // "فريق العمل" تُعرض — بدون كذا كودها ما يكون مسجّل في PROMO_CODES فما
 // تشتغل عمولتها أبداً.
 function ensureEmployeeCodes(){
@@ -5554,7 +5171,7 @@ $('music-upload-input')?.addEventListener('change', (e)=>{
   // Tracks are stored as base64 inside the shared oli_public_state row,
   // which every visitor downloads on every page load AND which gets
   // re-uploaded whole on every future admin save. A large file (or a
-  // handful of medium ones) can silently exceed Supabase's request-size
+  // handful of medium ones) can silently exceed الخادم's request-size
   // limit — after that, EVERY admin save (not just music) starts failing.
   // Capping the raw file size here keeps that from happening quietly.
   const MAX_MUSIC_BYTES = 2 * 1024 * 1024; // 2MB raw (~2.7MB as base64)
@@ -5573,7 +5190,7 @@ $('music-upload-input')?.addEventListener('change', (e)=>{
       if(ok===false){
         state.music.tracks.pop();
         if(state.music.activeId===track.id) state.music.activeId = state.music.tracks[0]?.id || null;
-        msg.textContent = 'تعذر رفع الأغنية إلى Supabase';
+        msg.textContent = 'تعذر رفع الأغنية إلى الخادم';
         renderAdminMusic();
         applyMusicSettings();
       } else {
@@ -5657,22 +5274,22 @@ $('backup-import-input')?.addEventListener('change', (e)=>{
         // Do NOT reload here — reloading would re-fetch the old (unchanged)
         // cloud data and silently discard the import with no other sign
         // anything went wrong.
-        toast('فشل استيراد النسخة إلى Supabase — البيانات لم تُحفظ', 'fa-triangle-exclamation');
+        toast('فشل استيراد النسخة إلى الخادم — البيانات لم تُحفظ', 'fa-triangle-exclamation');
         return;
       }
-      toast('تم استيراد النسخة الاحتياطية إلى Supabase — يُعاد تحميل الصفحة', 'fa-circle-check');
+      toast('تم استيراد النسخة الاحتياطية إلى الخادم — يُعاد تحميل الصفحة', 'fa-circle-check');
       setTimeout(()=> location.reload(), 1200);
     }catch(err){ toast(err?.message || 'الملف غير صالح', 'fa-triangle-exclamation'); }
   };
   reader.readAsText(file);
 });
 $('btn-reset-defaults')?.addEventListener('click', async ()=>{
-  if(!confirm('هذا هيرجع كل الإعدادات والمنتجات والتقييمات للوضع الافتراضي في Supabase، متأكدة؟')) return;
+  if(!confirm('هذا هيرجع كل الإعدادات والمنتجات والتقييمات للوضع الافتراضي محلياً في المتصفح، متأكدة؟')) return;
   state = makeDefaultState();
   normalizeState();
   const ok = await syncCloudState('إعادة البيانات الافتراضية');
   if(ok===false){
-    toast('فشل إرجاع الإعدادات الافتراضية إلى Supabase — لم يتم الحفظ', 'fa-triangle-exclamation');
+    toast('فشل إرجاع الإعدادات الافتراضية إلى الخادم — لم يتم الحفظ', 'fa-triangle-exclamation');
     return;
   }
   location.reload();
@@ -5702,7 +5319,7 @@ function renderReviews(){
    sale, then by rating) straight from PRODUCTS and auto-rotates
    through them with a working add-to-cart + quickview. Pure front-end,
    reads only from the existing PRODUCTS/state, writes nothing new to
-   Supabase.
+   الخادم.
 --------------------------------------------------------------- */
 let heroSpotlightTimer = null, heroSpotlightIdx = 0, heroSpotlightList = [];
 function pickHeroSpotlightProducts(){
@@ -5977,8 +5594,8 @@ async function init(){
   populateJobFilters();
   setInterval(refreshFakeViewBadges, 15000);
 
-  // First establish the Supabase identity, then hydrate every piece of persistent state.
-  await restoreSupabaseSession();
+  // First establish the الخادم identity, then hydrate every piece of persistent state.
+  if(localStorage.getItem(VYBE_ADMIN_KEY+'_session')==='1'){ oliCurrentUser={email:localStorage.getItem(VYBE_ADMIN_KEY+'_email')||VYBE_ADMIN_DEFAULT_EMAIL}; oliAdminVerified=true; }
   await hydrateCloudState(isAdminAuthed());
   if(state.activePromo) activePromo = state.activePromo;
   renderCategories();
@@ -6037,7 +5654,7 @@ else init();
    وأسرع وأذكى. كل شيء هنا يعمل محلياً في المتصفح فوق البيانات
    الموجودة أصلاً في state (بنفس أسلوب saveState() المستخدم أصلاً
    في باقي الموقع) أو في localStorage الخاص بالجهاز فقط — بدون أي
-   إضافة أو تعديل على Supabase أو على طريقة الاتصال بقاعدة البيانات.
+   إضافة أو تعديل على الخادم أو على طريقة الاتصال بقاعدة البيانات.
 --------------------------------------------------------------- */
 
 /* ==== 1) طباعة فاتورة/إيصال الطلب + نسخ تفاصيله بضغطة واحدة ==== */
@@ -6254,7 +5871,7 @@ function refreshHeroSpotlightData(){
 }
 
 /* ==== 3) سجل نشاط الإدارة — محلي بالكامل في localStorage الخاص
-   بالجهاز، بدون أي إرسال أو تخزين في Supabase ==== */
+   بالجهاز، بدون أي إرسال أو تخزين محلياً في المتصفح ==== */
 const OLI_LOG_KEY = 'oli_admin_activity_log';
 function oliLogActivity(action, detail){
   try{
@@ -6412,7 +6029,7 @@ renderActivityLog();
    ✨ دفعة تحسينات ثانية — تراجع عن الحذف، تكرار منتج، ترتيب الجدول،
    تجديد سريع للمخزون، وقفل تلقائي عند عدم النشاط. كل شيء محلي في
    المتصفح فوق نفس آلية الحفظ الموجودة أصلاً (saveState) أو بدون أي
-   حفظ إطلاقاً (الترتيب، القفل) — بدون أي علاقة بـ Supabase.
+   حفظ إطلاقاً (الترتيب، القفل) — بدون أي علاقة بـ الخادم.
 --------------------------------------------------------------- */
 
 /* ==== 5) تراجع عن حذف منتج خلال 6 ثوانٍ (بدل نافذة تأكيد مزعجة) ====
@@ -6525,7 +6142,7 @@ function quickRestock(id){
 
 /* ==== 9) قفل تلقائي للوحة التحكم عند عدم النشاط (حماية إضافية إن
    تُركت الشاشة مفتوحة) — قفل محلي بحت في الواجهة، لا يسجّل خروجاً من
-   Supabase ولا يمس الجلسة إطلاقاً، فقط يخفي المحتوى الحساس خلف شاشة
+   الخادم ولا يمس الجلسة إطلاقاً، فقط يخفي المحتوى الحساس خلف شاشة
    "انقر للمتابعة" حتى تُثبتي حضورك مجدداً. ==== */
 let _oliIdleTimer = null;
 const OLI_IDLE_LIMIT_MS = 6 * 60 * 1000; // 6 دقائق
@@ -6708,7 +6325,7 @@ setTimeout(()=>{ const s=document.getElementById('splash'); if(s) s.classList.ad
       saveState('OLI COSMOS: حارس الواقع — إصلاح آمن');
       if(typeof initHeroSpotlight==='function')initHeroSpotlight();
       if(typeof renderCosmos==='function')renderCosmos();
-      toast('تم إصلاح الحالات غير الصالحة فقط — بدون تغيير Supabase أو بنية النظام','fa-shield-halved');
+      toast('تم إصلاح الحالات غير الصالحة فقط — بدون تغيير الخادم أو بنية النظام','fa-shield-halved');
     }
     function render(){
       const h=horizon(),g=gravity(),cr=critique(),issues=audit();
